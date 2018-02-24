@@ -3,3 +3,5 @@
 *.iml
 .idea/libraries/
 build/
+deploy.cmd
+out/
