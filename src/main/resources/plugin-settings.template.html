@@ -1,0 +1,25 @@
+<div class="form_item_block">
+    <label>SMTP Host:<span class="asterisk">*</span></label>
+    <input type="text" ng-model="smtpHost" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>SMTP Port:<span class="asterisk">*</span></label>
+    <input type="text" ng-model="smtpPort" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[smtpPort].$error.server">{{ GOINPUTNAME[smtpPort].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>From E-mail address:<span class="asterisk">*</span></label>
+    <input type="text" ng-model="senderEmail" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[senderEmail].$error.server">{{ GOINPUTNAME[senderEmail].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>REST user name:<span class="asterisk">*</span></label>
+    <input type="text" ng-model="restUser" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[restUser].$error.server">{{ GOINPUTNAME[restUser].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>REST user password:<span class="asterisk">*</span></label>
+    <input type="password" ng-model="restPassword" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[restPassword].$error.server">{{ GOINPUTNAME[restPassword].$error.server }}</span>
+</div>

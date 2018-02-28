@@ -11,14 +11,16 @@ import com.thoughtworks.go.plugin.api.request.DefaultGoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
+import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.vary.gong.email.CachedPipelineInfoProvider;
-import com.vary.gong.email.DebugEmailSender;
-import com.vary.gong.email.EmailNotificationListener;
-import com.vary.gong.email.PipelineInfoProvider;
+import com.vary.gong.email.*;
 import com.vary.gong.go.api.GoServerApi;
 import com.vary.gong.go.api.StageStateChange;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -33,21 +35,19 @@ public class GongNotifierPlugin implements GoPlugin {
 	private static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
 	private static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
 	private static final String REQUEST_NOTIFICATIONS_INTERESTED_IN = "notifications-interested-in";
-	private static final String REQUEST_STAGE_STATUS = "stage-status";
+	public static final String REQUEST_STAGE_STATUS = "stage-status";
+	public static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
+	private static final String PLUGIN_ID = "com.vary.gong";
 
 	private static final String EXTENSION_NAME = "notification";
 	private static final List<String> goSupportedVersions = asList("1.0");
 
+	private PluginSettings settings;
 	private GoApplicationAccessor goApplicationAccessor;
 	private Gson gson = new Gson();
 	private List<NotificationListener> listeners = new LinkedList<>();
 	private PipelineInfoProvider pipelineInfo;
-
-	public GongNotifierPlugin() {
-		pipelineInfo = new CachedPipelineInfoProvider(new GoServerApi("http://localhost:8153/go"));
-		listeners.add(new DebugNotificationListener());
-		listeners.add(new EmailNotificationListener(pipelineInfo, new DebugEmailSender()));
-	}
+	private String settingsTemplate;
 
 	@Override
 	public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
@@ -79,15 +79,32 @@ public class GongNotifierPlugin implements GoPlugin {
 	}
 
 	private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
-		return ok(null);
+		return ok(PluginSettings.FIELD_CONFIG);
 	}
 
 	private GoPluginApiResponse handleGetPluginSettingsView() {
-		return ok(null);
+		if (settingsTemplate == null) {
+			try (InputStream is = getClass().getResourceAsStream("/plugin-settings.template.html")) {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				int r;
+				byte[] buf = new byte[4096];
+				while ((r = is.read(buf)) > 0) {
+					bos.write(buf, 0, r);
+				}
+				settingsTemplate = new String(bos.toByteArray(), StandardCharsets.UTF_8);
+			} catch (IOException e) {
+				LOGGER.error("Could not load settings template: ", e);
+			}
+		}
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("template", settingsTemplate);
+		return ok(response);
 	}
 
 	private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
-		return ok(null);
+		List<ValidationError> errors = new LinkedList<>();
+		return ok(errors);
 	}
 
 	private GoPluginApiResponse handleNotificationsInterestedIn() {
@@ -96,8 +113,37 @@ public class GongNotifierPlugin implements GoPlugin {
 		return ok(response);
 	}
 
+	private void reinit() {
+		listeners.clear();
+
+		pipelineInfo = new CachedPipelineInfoProvider(
+				new GoServerApi("http://localhost:8153/go")
+					.setAdminCredentials(settings.getRestUser(), settings.getRestPassword()));
+		EmailSender sender = new JavaxEmailSender(settings.getSmtpHost(), settings.getSmtpPort());
+
+		listeners.add(new DebugNotificationListener());
+		listeners.add(new EmailNotificationListener(pipelineInfo, sender));
+	}
+
+	private PluginSettings fetchPluginSettings() {
+		Map<String, Object> requestMap = new HashMap<>();
+		requestMap.put("plugin-id", PLUGIN_ID);
+		GoApiResponse response = goApplicationAccessor.submit(request(GET_PLUGIN_SETTINGS, requestMap));
+		if (response.responseBody() == null || response.responseBody().trim().isEmpty()) {
+			LOGGER.info("Plugin not configured. Using defaults.");
+			return new PluginSettings();
+		}
+		return new Gson().fromJson(response.responseBody(), PluginSettings.class);
+	}
+
 	private GoPluginApiResponse handleStageStatus(GoPluginApiRequest request) {
 		LOGGER.info("handleStageStatus: " + request.requestBody());
+		PluginSettings currentSettings = fetchPluginSettings();
+		if (settings == null || !settings.equals(currentSettings)) {
+			LOGGER.info("Plugin settings changed.");
+			settings = currentSettings;
+			reinit();
+		}
 
 		final StageStateChange stateChange = gson.fromJson(request.requestBody(), StageStateChange.class);
 		String newState = stateChange.getState();
@@ -164,5 +210,14 @@ public class GongNotifierPlugin implements GoPlugin {
 		DefaultGoApiRequest req = new DefaultGoApiRequest(api, "1.0", pluginIdentifier());
 		req.setRequestBody(new Gson().toJson(request));
 		return req;
+	}
+
+	private class ValidationError {
+		String key;
+		String message;
+		public ValidationError(String key, String message) {
+			this.key = key;
+			this.message = message;
+		}
 	}
 }

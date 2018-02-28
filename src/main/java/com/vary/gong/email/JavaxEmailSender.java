@@ -11,15 +11,18 @@ import java.util.Properties;
 public class JavaxEmailSender implements EmailSender {
 
 	private String smtpHost;
+	private int smtpPort;
 
-	public JavaxEmailSender(String smtpHost) {
+	public JavaxEmailSender(String smtpHost, int smtpPort) {
 		this.smtpHost = smtpHost;
+		this.smtpPort = smtpPort;
 	}
 
 	@Override
 	public void sendMail(String sender, List<String> recipients, String subject, String body) throws Exception {
 		Properties properties = System.getProperties();
 		properties.setProperty("mail.smtp.host", smtpHost);
+		properties.put("mail.smtp.port", Integer.toString(smtpPort));
 		Session session = Session.getDefaultInstance(properties);
 
 		MimeMessage message = new MimeMessage(session);
