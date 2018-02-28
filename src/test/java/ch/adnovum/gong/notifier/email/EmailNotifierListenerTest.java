@@ -1,13 +1,11 @@
-package com.vary.gong.email;
+package ch.adnovum.gong.notifier.email;
 
-import com.vary.gong.go.api.PipelineConfig;
-import com.vary.gong.go.api.StageStateChange;
+import ch.adnovum.gong.notifier.go.api.PipelineConfig;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -18,7 +16,6 @@ import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 

@@ -1,6 +1,6 @@
-package com.vary.gong;
+package ch.adnovum.gong.notifier;
 
-import com.vary.gong.go.api.StageStateChange;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
 
 public interface NotificationListener {
 

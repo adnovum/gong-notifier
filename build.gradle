@@ -5,7 +5,7 @@ plugins {
 }
 apply plugin: 'java'
 
-group = 'com.vary.gong'
+group = 'ch.adnovum.gong.notifier'
 version = '0.0.1'
 
 

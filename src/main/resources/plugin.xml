@@ -4,9 +4,9 @@
         <name>Gong Notifier</name>
         <version>$version</version>
         <target-go-version>$goVersion</target-go-version>
-        <description>Plugin to send notifications</description>
+        <description>Plugin to send notifications based on pipeline configurations</description>
         <vendor>
-            <name>Sandro Heinzelmann</name>
+            <name>AdNovum Informatik AG</name>
             <url></url>
         </vendor>
     </about>

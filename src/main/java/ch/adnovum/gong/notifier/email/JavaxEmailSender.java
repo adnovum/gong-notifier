@@ -1,12 +1,12 @@
-package com.vary.gong.email;
+package ch.adnovum.gong.notifier.email;
 
+import java.util.List;
+import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.Properties;
 
 public class JavaxEmailSender implements EmailSender {
 

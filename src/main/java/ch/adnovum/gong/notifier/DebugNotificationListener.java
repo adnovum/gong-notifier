@@ -1,7 +1,7 @@
-package com.vary.gong;
+package ch.adnovum.gong.notifier;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
-import com.vary.gong.go.api.StageStateChange;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
 
 public class DebugNotificationListener implements NotificationListener {
 

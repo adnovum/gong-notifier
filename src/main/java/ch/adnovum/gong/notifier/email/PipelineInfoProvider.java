@@ -1,7 +1,7 @@
-package com.vary.gong.email;
+package ch.adnovum.gong.notifier.email;
 
-import com.vary.gong.go.api.PipelineConfig;
-import com.vary.gong.go.api.PipelineHistory;
+import ch.adnovum.gong.notifier.go.api.PipelineConfig;
+import ch.adnovum.gong.notifier.go.api.PipelineHistory;
 
 import java.util.Optional;
 

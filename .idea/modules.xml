@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/gong.iml" filepath="$PROJECT_DIR$/gong.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gong_main.iml" filepath="$PROJECT_DIR$/.idea/modules/gong_main.iml" group="gong" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gong_test.iml" filepath="$PROJECT_DIR$/.idea/modules/gong_test.iml" group="gong" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gong-notifier.iml" filepath="$PROJECT_DIR$/.idea/modules/gong-notifier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gong-notifier_main.iml" filepath="$PROJECT_DIR$/.idea/modules/gong-notifier_main.iml" group="gong-notifier" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gong-notifier_test.iml" filepath="$PROJECT_DIR$/.idea/modules/gong-notifier_test.iml" group="gong-notifier" />
     </modules>
   </component>
 </project>

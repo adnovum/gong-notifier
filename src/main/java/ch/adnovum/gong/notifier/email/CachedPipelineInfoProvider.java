@@ -1,10 +1,10 @@
-package com.vary.gong.email;
-
-import com.vary.gong.go.api.GoServerApi;
-import com.vary.gong.go.api.PipelineConfig;
-import com.vary.gong.go.api.PipelineHistory;
+package ch.adnovum.gong.notifier.email;
 
 import java.util.Optional;
+
+import ch.adnovum.gong.notifier.go.api.GoServerApi;
+import ch.adnovum.gong.notifier.go.api.PipelineConfig;
+import ch.adnovum.gong.notifier.go.api.PipelineHistory;
 
 public class CachedPipelineInfoProvider implements PipelineInfoProvider {
 
@@ -14,7 +14,7 @@ public class CachedPipelineInfoProvider implements PipelineInfoProvider {
 	private ApiCache<String, PipelineHistory> historyCache;
 
 	public CachedPipelineInfoProvider(GoServerApi api) {
-		configCache = new ApiCache<>(5 * MINUTES, api::fetchPipelineConfig);
+		configCache = new ApiCache<>(0 * MINUTES, api::fetchPipelineConfig);
 		historyCache = new ApiCache<>(0 * MINUTES, api::fetchPipelineHistory);
 	}
 

@@ -1,6 +1,4 @@
-package com.vary.gong.email;
-
-import org.junit.Assert;
+package ch.adnovum.gong.notifier.email;
 
 import java.util.*;
 

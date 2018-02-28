@@ -1,6 +1,4 @@
-package com.vary.gong.go.api;
-
-import com.google.gson.annotations.SerializedName;
+package ch.adnovum.gong.notifier.go.api;
 
 import java.util.List;
 import java.util.Optional;

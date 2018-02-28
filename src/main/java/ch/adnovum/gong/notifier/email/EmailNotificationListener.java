@@ -1,12 +1,16 @@
-package com.vary.gong.email;
+package ch.adnovum.gong.notifier.email;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import ch.adnovum.gong.notifier.NotificationListener;
+import ch.adnovum.gong.notifier.go.api.PipelineConfig;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.thoughtworks.go.plugin.api.logging.Logger;
-import com.vary.gong.NotificationListener;
-import com.vary.gong.go.api.PipelineConfig;
-import com.vary.gong.go.api.PipelineConfig.EnvironmentVariable;
-import com.vary.gong.go.api.StageStateChange;
-
-import java.util.*;
 
 public class EmailNotificationListener implements NotificationListener {
 
@@ -17,10 +21,15 @@ public class EmailNotificationListener implements NotificationListener {
 
 	private PipelineInfoProvider pipelineInfo;
 	private EmailSender emailSender;
+	private String senderEmail;
+	private String subjectTemplate;
 
-	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender) {
+	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
+			String subjectTemplate) {
 		this.pipelineInfo = pipelineInfo;
 		this.emailSender = emailSender;
+		this.senderEmail = senderEmail;
+		this.subjectTemplate = subjectTemplate;
 	}
 
 	@Override
@@ -60,10 +69,15 @@ public class EmailNotificationListener implements NotificationListener {
 		}
 
 		LOGGER.info("Email for " + stateChange.getPipelineName() + ": " + String.join(",", addrs));
-		String subject = "Pipeline " + stateChange.getPipelineName() + " stage " + stateChange.getStageName() + " " + state + "!";
+		Map<String, Object> templateVals = new HashMap<>();
+		templateVals.put("pipeline", stateChange.getPipelineName());
+		templateVals.put("stage", stateChange.getStageName());
+		templateVals.put("state", state);
+
+		String subject = TemplateHelper.fillTemplate(subjectTemplate, templateVals);
 		String body = "yup";
 		try {
-			emailSender.sendMail("blop@example.com", addrs, subject, body);
+			emailSender.sendMail(senderEmail, addrs, subject, body);
 		} catch (Exception e) {
 			LOGGER.error("Error sending email to " + String.join(",", addrs), e);
 		}
@@ -78,7 +92,7 @@ public class EmailNotificationListener implements NotificationListener {
 
 		Map<String, String> addrs = new HashMap<>();
 		Set<String> notMatching = new HashSet<>();
-		for (EnvironmentVariable v: cfg.environmentVariables) {
+		for (PipelineConfig.EnvironmentVariable v: cfg.environmentVariables) {
 			if (v.name.startsWith(EMAIL_ENV_VARIABLE)) {
 				if (v.name.endsWith(STATES_SUFFIX)) {
 					// TODO: allow negating with !
@@ -95,4 +109,6 @@ public class EmailNotificationListener implements NotificationListener {
 
 		return new LinkedList<>(addrs.values());
 	}
+
+
 }

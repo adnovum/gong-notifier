@@ -1,5 +1,29 @@
-package com.vary.gong;
+package ch.adnovum.gong.notifier;
 
+import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_BUILDING;
+import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_CANCELLED;
+import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_FAILED;
+import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_PASSED;
+import static java.util.Arrays.asList;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import ch.adnovum.gong.notifier.email.CachedPipelineInfoProvider;
+import ch.adnovum.gong.notifier.email.EmailNotificationListener;
+import ch.adnovum.gong.notifier.email.EmailSender;
+import ch.adnovum.gong.notifier.email.JavaxEmailSender;
+import ch.adnovum.gong.notifier.email.PipelineInfoProvider;
+import ch.adnovum.gong.notifier.go.api.GoServerApi;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
@@ -13,19 +37,6 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.vary.gong.email.*;
-import com.vary.gong.go.api.GoServerApi;
-import com.vary.gong.go.api.StageStateChange;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.BiConsumer;
-
-import static com.vary.gong.go.api.GoApiConstants.*;
-import static java.util.Arrays.asList;
 
 @Extension
 public class GongNotifierPlugin implements GoPlugin {
@@ -122,7 +133,7 @@ public class GongNotifierPlugin implements GoPlugin {
 		EmailSender sender = new JavaxEmailSender(settings.getSmtpHost(), settings.getSmtpPort());
 
 		listeners.add(new DebugNotificationListener());
-		listeners.add(new EmailNotificationListener(pipelineInfo, sender));
+		listeners.add(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(), settings.getSubjectTemplate()));
 	}
 
 	private PluginSettings fetchPluginSettings() {

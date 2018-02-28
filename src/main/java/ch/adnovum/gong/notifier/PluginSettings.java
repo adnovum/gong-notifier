@@ -1,4 +1,4 @@
-package com.vary.gong;
+package ch.adnovum.gong.notifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,14 +10,16 @@ public class PluginSettings {
 	private static final String DEFAULT_SENDER_EMAIL = "gocd@noreply.com";
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
+	private static final String DEFAULT_SUBJECT_TEMPLATE = "Stage {stage} of {pipeline} {state}!";
 	
 	public static final Map<String, Field> FIELD_CONFIG = new HashMap<>();
 	static {
-		FIELD_CONFIG.put("smtpHost", new Field("Smtp Host", DEFAULT_SMTP_HOST, true, false, 0));
-		FIELD_CONFIG.put("smtpPort", new Field("Smtp Port", DEFAULT_SMTP_PORT, true, false, 0));
+		FIELD_CONFIG.put("smtpHost", new Field("Smtp Host", DEFAULT_SMTP_HOST, false, false, 0));
+		FIELD_CONFIG.put("smtpPort", new Field("Smtp Port", DEFAULT_SMTP_PORT, false, false, 0));
 		FIELD_CONFIG.put("senderEmail", new Field("Sender E-mail", DEFAULT_SENDER_EMAIL, true, false, 0));
-		FIELD_CONFIG.put("restUser", new Field("Rest User", DEFAULT_REST_USER, true, false, 0));
-		FIELD_CONFIG.put("restPassword", new Field("Rest Password", DEFAULT_REST_PASSWORD, true, true, 0));
+		FIELD_CONFIG.put("subjectTemplate", new Field("E-mail subject template", DEFAULT_SUBJECT_TEMPLATE, false, false, 0));
+		FIELD_CONFIG.put("restUser", new Field("Rest User", DEFAULT_REST_USER, false, false, 0));
+		FIELD_CONFIG.put("restPassword", new Field("Rest Password", DEFAULT_REST_PASSWORD, false, true, 0));
 	}
 
 	private String smtpHost = DEFAULT_SMTP_HOST;
@@ -25,6 +27,7 @@ public class PluginSettings {
 	private String senderEmail = DEFAULT_SENDER_EMAIL;
 	private String restUser = DEFAULT_REST_USER;
 	private String restPassword = DEFAULT_REST_PASSWORD;
+	private String subjectTemplate = DEFAULT_SUBJECT_TEMPLATE;
 	
 	public String getSmtpHost() {
 		return valueOrDefault(smtpHost, DEFAULT_SMTP_HOST);
@@ -64,6 +67,14 @@ public class PluginSettings {
 
 	public void setRestPassword(String restPassword) {
 		this.restPassword = restPassword;
+	}
+
+	public String getSubjectTemplate() {
+		return valueOrDefault(subjectTemplate, DEFAULT_SUBJECT_TEMPLATE);
+	}
+
+	public void setSubjectTemplate(String subjectTemplate) {
+		this.subjectTemplate = subjectTemplate;
 	}
 
 	private static String valueOrDefault(String value, String defaultValue) {

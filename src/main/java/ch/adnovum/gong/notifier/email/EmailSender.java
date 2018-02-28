@@ -1,4 +1,4 @@
-package com.vary.gong.email;
+package ch.adnovum.gong.notifier.email;
 
 import java.util.List;
 

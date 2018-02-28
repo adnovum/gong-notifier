@@ -1,7 +1,6 @@
-package com.vary.gong.go.api;
+package ch.adnovum.gong.notifier.go.api;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
 import java.io.IOException;

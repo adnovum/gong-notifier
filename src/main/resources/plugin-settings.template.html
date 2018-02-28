@@ -1,25 +1,38 @@
 <div class="form_item_block">
-    <label>SMTP Host:<span class="asterisk">*</span></label>
-    <input type="text" ng-model="smtpHost" ng-required="true"/>
+    <label>SMTP Host:</label>
+    <input type="text" ng-model="smtpHost"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>SMTP Port:<span class="asterisk">*</span></label>
-    <input type="text" ng-model="smtpPort" ng-required="true"/>
+    <label>SMTP Port:/label>
+    <input type="text" ng-model="smtpPort"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpPort].$error.server">{{ GOINPUTNAME[smtpPort].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>From E-mail address:<span class="asterisk">*</span></label>
-    <input type="text" ng-model="senderEmail" ng-required="true"/>
+    <label>From E-mail address:</label>
+    <input type="text" ng-model="senderEmail"/>
     <span class="form_error" ng-show="GOINPUTNAME[senderEmail].$error.server">{{ GOINPUTNAME[senderEmail].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>REST user name:<span class="asterisk">*</span></label>
-    <input type="text" ng-model="restUser" ng-required="true"/>
+    <label>E-mail subject template:</label>
+    <input type="text" ng-model="subjectTemplate"/>
+    <span class="form_error" ng-show="GOINPUTNAME[subjectTemplate].$error.server">{{ GOINPUTNAME[subjectTemplate].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>REST user name:</label>
+    <input type="text" ng-model="restUser"/>
     <span class="form_error" ng-show="GOINPUTNAME[restUser].$error.server">{{ GOINPUTNAME[restUser].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>REST user password:<span class="asterisk">*</span></label>
-    <input type="password" ng-model="restPassword" ng-required="true"/>
+    <label>REST user password:</label>
+    <input type="password" ng-model="restPassword"/>
     <span class="form_error" ng-show="GOINPUTNAME[restPassword].$error.server">{{ GOINPUTNAME[restPassword].$error.server }}</span>
 </div>
+<button class="check_connection submit button MB_focusable"
+        onclick="var eok=document.getElementById('gong-conn-ok'); var efa=document.getElementById('gong-conn-fail');eok.style.display='none';efa.style.display='none';var xhttp = new XMLHttpRequest();xhttp.onreadystatechange = function() {if (this.readyState == 4) {if (this.status == 200) {eok.style.display='inline';}else {efa.textContent = 'Connection failed with status ' + this.status; efa.style.display='inline';}}};xhttp.open('GET', '/go/api/admin/plugin_info/ch.adnovum.gong.notifier', true);xhttp.setRequestHeader('Accept', 'application/vnd.go.cd.v3+json\'');xhttp.send();">
+    Check REST connection
+</button>
+<br/>
+<span id="gong-conn-ok" style="color:green; display:none">Connection successful</span>
+<span id="gong-conn-fail" style="color:red; display:none">Connection failed with status </span>
+
