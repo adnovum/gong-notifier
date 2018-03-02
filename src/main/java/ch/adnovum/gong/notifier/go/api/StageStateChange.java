@@ -20,6 +20,10 @@ public class StageStateChange {
 		return pipeline.counter;
 	}
 
+	public Integer getStageCounter() {
+		return pipeline.stage.counter;
+	}
+
 	public StageStateChange() {
 	}
 
@@ -40,5 +44,6 @@ public class StageStateChange {
 	public static class Stage {
 		public String name;
 		public String state;
+		public Integer counter;
 	}
 }

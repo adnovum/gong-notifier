@@ -9,31 +9,31 @@ public class DebugNotificationListener implements NotificationListener {
 
 	@Override
 	public void handleBuilding(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " building!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " building!");
 	}
 
 	@Override
 	public void handlePassed(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " passed!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " passed!");
 	}
 
 	@Override
 	public void handleFailed(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " failed!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " failed!");
 	}
 
 	@Override
 	public void handleBroken(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " broke!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " broke!");
 	}
 
 	@Override
 	public void handleFixed(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " fixed!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " fixed!");
 	}
 
 	@Override
 	public void handleCancelled(StageStateChange stateChange) {
-		LOGGER.info(stateChange.getPipelineName() + "." + stateChange.getStageName() + " cancelled!");
+		LOGGER.debug(stateChange.getPipelineName() + "." + stateChange.getStageName() + " cancelled!");
 	}
 }

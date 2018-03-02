@@ -6,10 +6,6 @@ import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_FAILED;
 import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_PASSED;
 import static java.util.Arrays.asList;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -86,7 +82,7 @@ public class GongNotifierPlugin implements GoPlugin {
 				return handleStageStatus(request);
 		}
 
-		return error(null);
+		return error("Unknown request");
 	}
 
 	private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
@@ -95,17 +91,7 @@ public class GongNotifierPlugin implements GoPlugin {
 
 	private GoPluginApiResponse handleGetPluginSettingsView() {
 		if (settingsTemplate == null) {
-			try (InputStream is = getClass().getResourceAsStream("/plugin-settings.template.html")) {
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				int r;
-				byte[] buf = new byte[4096];
-				while ((r = is.read(buf)) > 0) {
-					bos.write(buf, 0, r);
-				}
-				settingsTemplate = new String(bos.toByteArray(), StandardCharsets.UTF_8);
-			} catch (IOException e) {
-				LOGGER.error("Could not load settings template: ", e);
-			}
+			settingsTemplate = GongUtil.readResourceString("/plugin-settings.template.html");
 		}
 
 		Map<String, Object> response = new HashMap<>();
@@ -125,15 +111,18 @@ public class GongNotifierPlugin implements GoPlugin {
 	}
 
 	private void reinit() {
+		LOGGER.info("Re-initializing with settings: " + gson.toJson(settings).
+				replaceAll("\"restPassword\":\"[^ \"]*\"","\"restPassword\":\"***\""));
 		listeners.clear();
 
 		pipelineInfo = new CachedPipelineInfoProvider(
-				new GoServerApi("http://localhost:8153/go")
+				new GoServerApi(settings.getServerUrl())
 					.setAdminCredentials(settings.getRestUser(), settings.getRestPassword()));
 		EmailSender sender = new JavaxEmailSender(settings.getSmtpHost(), settings.getSmtpPort());
 
 		listeners.add(new DebugNotificationListener());
-		listeners.add(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(), settings.getSubjectTemplate()));
+		listeners.add(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(),
+				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerUrl()));
 	}
 
 	private PluginSettings fetchPluginSettings() {
@@ -148,10 +137,9 @@ public class GongNotifierPlugin implements GoPlugin {
 	}
 
 	private GoPluginApiResponse handleStageStatus(GoPluginApiRequest request) {
-		LOGGER.info("handleStageStatus: " + request.requestBody());
+		LOGGER.debug("handleStageStatus: " + request.requestBody());
 		PluginSettings currentSettings = fetchPluginSettings();
 		if (settings == null || !settings.equals(currentSettings)) {
-			LOGGER.info("Plugin settings changed.");
 			settings = currentSettings;
 			reinit();
 		}
@@ -161,6 +149,10 @@ public class GongNotifierPlugin implements GoPlugin {
 		String oldState = pipelineInfo.getPipelineHistory(stateChange.getPipelineName())
 				.flatMap(h -> h.getPreviousStageResult(stateChange.getStageName(), stateChange.getPipelineCounter()))
 				.orElse(null);
+		if (oldState == null) {
+			LOGGER.warn("Could not get previous state of " + stateChange.getPipelineName() + "/" + stateChange.getPipelineCounter()
+				+ "/" + stateChange.getStageName());
+		}
 
 		final BiConsumer<NotificationListener, StageStateChange> fn;
 		switch (newState) {
