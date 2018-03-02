@@ -17,56 +17,56 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 
 	protected PipelineInfoProvider pipelineInfo;
 	private String targetEnvVariablePrefix;
-	private String targetStatesEnvVariableSuffix;
+	private String targetEventsEnvVariableSuffix;
 
 	public ConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String targetEnvVariablePrefix,
-			String targetStatesEnvVariableSuffix) {
+			String targetEventsEnvVariableSuffix) {
 		this.pipelineInfo = pipelineInfo;
 		this.targetEnvVariablePrefix = targetEnvVariablePrefix;
-		this.targetStatesEnvVariableSuffix = targetStatesEnvVariableSuffix;
+		this.targetEventsEnvVariableSuffix = targetEventsEnvVariableSuffix;
 	}
 
 	@Override
 	public void handleBuilding(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.BUILDING);
+		handle(stateChange,Event.BUILDING);
 	}
 
 	@Override
 	public void handlePassed(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.PASSED);
+		handle(stateChange,Event.PASSED);
 	}
 
 	@Override
 	public void handleFailed(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.FAILED);
+		handle(stateChange,Event.FAILED);
 	}
 
 	@Override
 	public void handleBroken(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.BROKEN);
+		handle(stateChange,Event.BROKEN);
 	}
 
 	@Override
 	public void handleFixed(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.FIXED);
+		handle(stateChange,Event.FIXED);
 	}
 
 	@Override
 	public void handleCancelled(StageStateChange stateChange) {
-		handle(stateChange,TransitionState.CANCELLED);
+		handle(stateChange,Event.CANCELLED);
 	}
 
-	private void handle(StageStateChange stateChange, TransitionState state) {
-		List<String> targets = lookupTargets(stateChange.getPipelineName(), state.getValue());
+	private void handle(StageStateChange stateChange, Event event) {
+		List<String> targets = lookupTargets(stateChange.getPipelineName(), event.getValue());
 		if (targets.isEmpty()) {
-			LOGGER.info("No targets found for " + stateChange.getPipelineName() + " with state " + state.getValue());
+			LOGGER.info("No targets found for " + stateChange.getPipelineName() + " with event " + event.getValue());
 			return;
 		}
 
-		notifyTargets(stateChange, state, targets);
+		notifyTargets(stateChange, event, targets);
 	}
 
-	protected abstract void notifyTargets(StageStateChange stateChange, TransitionState state, List<String> targets);
+	protected abstract void notifyTargets(StageStateChange stateChange, Event event, List<String> targets);
 
 	private List<String> lookupTargets(String pipelineName, String state) {
 		PipelineConfig cfg = pipelineInfo.getPipelineConfig(pipelineName).orElse(null);
@@ -79,10 +79,10 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		Set<String> notMatching = new HashSet<>();
 		for (PipelineConfig.EnvironmentVariable v: cfg.environmentVariables) {
 			if (v.name.startsWith(targetEnvVariablePrefix)) {
-				if (v.name.endsWith(targetStatesEnvVariableSuffix)) {
+				if (v.name.endsWith(targetEventsEnvVariableSuffix)) {
 					// TODO: allow negating with !
 					if (!v.value.toLowerCase().contains(state)) {
-						notMatching.add(v.name.substring(0, v.name.length() - targetStatesEnvVariableSuffix.length()));
+						notMatching.add(v.name.substring(0, v.name.length() - targetEventsEnvVariableSuffix.length()));
 					}
 				}
 				else {
@@ -95,7 +95,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		return new LinkedList<>(targets.values());
 	}
 
-	public enum TransitionState {
+	public enum Event {
 		BUILDING("building", "is building"),
 		PASSED("passed", "passed"),
 		FAILED("failed", "failed"),
@@ -106,7 +106,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		private String value;
 		private String verbString;
 
-		TransitionState(String value, String verbString) {
+		Event(String value, String verbString) {
 			this.value = value;
 			this.verbString = verbString;
 		}

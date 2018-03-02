@@ -15,7 +15,7 @@ public class PluginSettings {
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
 	private static final String DEFAULT_SUBJECT_TEMPLATE = "Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] "
-			+ "{transition}";
+			+ "{event}";
 	private static final String DEFAULT_BODY_TEMPLATE = GongUtil.readResourceString("/default-email-body.template.html");
 	
 	public static final Map<String, Field> FIELD_CONFIG = new HashMap<>();

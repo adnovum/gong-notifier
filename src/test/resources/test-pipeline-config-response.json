@@ -36,7 +36,7 @@
 		},
 		{
 			"secure": false,
-			"name": "GONG_EMAIL_ADDRESS_STATES",
+			"name": "GONG_EMAIL_ADDRESS_EVENTS",
 			"value": "fixed,broken"
 		}
 	],

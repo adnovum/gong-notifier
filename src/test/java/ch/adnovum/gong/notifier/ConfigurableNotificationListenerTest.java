@@ -41,7 +41,7 @@ public class ConfigurableNotificationListenerTest {
 	public void setup() {
 		listener = new TestConfigurableNotificationListener(infoProvider,
 				"GONG_TEST_TARGET",
-				"_STATES");
+				"_EVENTS");
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldSendSpecificToSingleWithStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_STATES", "fixed, broken");
+				"GONG_TEST_TARGET_EVENTS", "fixed, broken");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -98,11 +98,11 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldSendToMultipleWithStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_STATES", "fixed, broken",
+				"GONG_TEST_TARGET_EVENTS", "fixed, broken",
 				"GONG_TEST_TARGET_2", "zonk@example.com",
-				"GONG_TEST_TARGET_2_STATES", "failed",
+				"GONG_TEST_TARGET_2_EVENTS", "failed",
 				"GONG_TEST_TARGET_bla", "rop@example.com",
-				"GONG_TEST_TARGET_bla_STATES", "building, failed");
+				"GONG_TEST_TARGET_bla_EVENTS", "building, failed");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -121,7 +121,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldSendToNoneWithNoMatchingStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_STATES", "broken");
+				"GONG_TEST_TARGET_EVENTS", "broken");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -175,8 +175,8 @@ public class ConfigurableNotificationListenerTest {
 		}
 
 		@Override
-		protected void notifyTargets(StageStateChange stateChange, TransitionState state, List<String> targets) {
-			targets.forEach(t -> this.targets.add(new Target(t, state.getValue())));
+		protected void notifyTargets(StageStateChange stateChange, Event event, List<String> targets) {
+			targets.forEach(t -> this.targets.add(new Target(t, event.getValue())));
 		}
 
 		private void assertTargets(String expectedState, String... expectedTargets) {

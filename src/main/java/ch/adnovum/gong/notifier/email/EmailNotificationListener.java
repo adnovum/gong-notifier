@@ -16,7 +16,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 public class EmailNotificationListener extends ConfigurableNotificationListener {
 
 	private static final String EMAIL_ENV_VARIABLE = "GONG_EMAIL_ADDRESS";
-	private static final String STATES_SUFFIX = "_STATES";
+	private static final String EVENTS_SUFFIX = "_EVENTS";
 
 	private static Logger LOGGER = Logger.getLoggerFor(EmailNotificationListener.class);
 
@@ -28,7 +28,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
 			String subjectTemplate, String bodyTemplate, String serverDisplayUrl) {
-		super(pipelineInfo, EMAIL_ENV_VARIABLE, STATES_SUFFIX);
+		super(pipelineInfo, EMAIL_ENV_VARIABLE, EVENTS_SUFFIX);
 
 		this.emailSender = emailSender;
 		this.senderEmail = senderEmail;
@@ -38,14 +38,14 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	}
 
 	@Override
-	protected void notifyTargets(StageStateChange stateChange, TransitionState state, List<String> targets) {
+	protected void notifyTargets(StageStateChange stateChange, Event event, List<String> targets) {
 		LOGGER.debug("Email for " + stateChange.getPipelineName() + ": " + String.join(",", targets));
 		Map<String, Object> templateVals = new HashMap<>();
 		templateVals.put("pipeline", escapeHtml(stateChange.getPipelineName()));
 		templateVals.put("stage", escapeHtml(stateChange.getStageName()));
 		templateVals.put("pipelineCounter", stateChange.getPipelineCounter());
 		templateVals.put("stageCounter", stateChange.getStageCounter());
-		templateVals.put("transition", escapeHtml(state.getVerbString()));
+		templateVals.put("event", escapeHtml(event.getVerbString()));
 		templateVals.put("serverUrl", escapeHtml(serverDisplayUrl));
 		templateVals.put("modificationList", generateModificationList(stateChange).orElse(""));
 
