@@ -5,6 +5,66 @@ gong-notifier is a GoCD plugin that aims to give pipeline owners better and more
 Instead of each user specifying what they want to get notified about; or having central notification rules
 managed by an admin, this plugin allows setting notification rules in the pipeline configuration via environment variables.
 
+## Plugin Installation
+
+Just drop the plugin jar into ```plugins/external``` and restart the server as per
+[official guide](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
+
+## Plugin configuration
+
+There are a number of global configuration settings for the plugin that can be set in the GoCD server plugins view.
+
+None of these settings are *required* but it's likely that the defaults do not match your setup.
+
+* **SMTP Host**
+  * SMTP server host via which to send mails
+  * **Default:** ```localhost```
+* **SMTP Port** 
+  * Port on which to connect to SMTP server 
+  * **Default:** ```25```
+* **From E-mail address:** 
+  * E-Mail address to use as sender
+  * **Default:** ```noreply@localhost.com```
+* **Server Display URL:** 
+  * The base url to use when linking to the GoCd GUI in mails 
+  * **Default:** ```https://localhost:8154/go```
+* **E-Mail subject template:**
+  * The template to use for the E-Mail subject. Allows using certain templating variables. See below.
+  * **Default:**: ```Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}``` 
+* **E-Mail body template:**
+  * The template to use for the E-Mail body. Allows using certain templating variables. See below.
+  * **Default:**:
+    ``` 
+    See details: <a href="{serverUrl}/pipelines/{pipeline}/{pipelineCounter}/{stage}/{stageCounter}">{serverUrl}/pipelines/{pipeline}/{pipelineCounter}/{stage}/{stageCounter}</a>
+    <br/>
+    <br/>-- CHECK-INS --
+    <br/>
+    <br/>{modificationList}
+    ``` 
+* **REST URL:** 
+  * The base url to use when making REST calls to the GoCD server 
+  * **Default:** ```http://localhost:8153/go```
+* **REST user name:** 
+  * The user to use when authorizing against an admin REST interface of the GoCD server 
+  * **Default:** [none]
+* **REST user password:** 
+  * The password to use when authorizing against an admin REST interface of the GoCD server 
+  * **Default:** [none]
+  
+The REST user credentials are necessary because the plugin needs to use an admin interface to retrieve the pipelines' environment
+variables. They do not need to be set if your server does not have any authorization enabled.
+
+### E-Mail templating options
+
+Templating is limited to replacing simple variables with their values. The following variables are available:
+* {pipeline} - Pipeline name
+* {stage} - Stage name
+* {pipelineCounter} - Counter for the pipeline
+* {stageCounter} - Counter for the stage
+- {event} - The stage transition event in a user friendly verb form. E.g. *is fixed*, *passed*, *is broken*, *failed*
+- {serverUrl} - The base server url as specified in the Server Display Url setting
+- {modificationList} - The list of modifications that caused the build
+
 ## Pipeline notification configuration
 
 Each pipeline can specify whom to e-mail when a stage change event occurs.
