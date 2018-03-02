@@ -138,6 +138,10 @@ public class PluginSettings {
 		if (getServerUrl() != null ? !getServerUrl().equals(that.getServerUrl()) : that.getServerUrl() != null) {
 			return false;
 		}
+		if (getServerDisplayUrl() != null ? !getServerDisplayUrl().equals(that.getServerDisplayUrl())
+				: that.getServerDisplayUrl() != null) {
+			return false;
+		}
 		if (getRestUser() != null ? !getRestUser().equals(that.getRestUser()) : that.getRestUser() != null) {
 			return false;
 		}
@@ -157,6 +161,7 @@ public class PluginSettings {
 		result = 31 * result + (getSmtpPort() != null ? getSmtpPort().hashCode() : 0);
 		result = 31 * result + (getSenderEmail() != null ? getSenderEmail().hashCode() : 0);
 		result = 31 * result + (getServerUrl() != null ? getServerUrl().hashCode() : 0);
+		result = 31 * result + (getServerDisplayUrl() != null ? getServerDisplayUrl().hashCode() : 0);
 		result = 31 * result + (getRestUser() != null ? getRestUser().hashCode() : 0);
 		result = 31 * result + (getRestPassword() != null ? getRestPassword().hashCode() : 0);
 		result = 31 * result + (getSubjectTemplate() != null ? getSubjectTemplate().hashCode() : 0);

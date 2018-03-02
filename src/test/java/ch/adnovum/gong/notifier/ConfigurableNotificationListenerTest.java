@@ -56,11 +56,30 @@ public class ConfigurableNotificationListenerTest {
 				"passed"));
 
 		listener.assertTargets("passed", "frank@example.com");
-
 	}
 
 	@Test
-	public void shouldSendToSingleWithMatches() throws Exception {
+	public void shouldSendAllToSingleWithoutStates() throws Exception {
+		addMockEnvVariables("pipeline1",
+				"GONG_TEST_TARGET", "frank@example.com");
+
+		StageStateChange change = new StageStateChange("pipeline1",
+				10,
+				"stage1",
+				"dummy");
+		ALL_HANDLERS.forEach(h -> h.accept(listener, change));
+
+		assertEquals(6, listener.targets.size());
+		listener.assertTargets("broken", "frank@example.com");
+		listener.assertTargets("passed", "frank@example.com");
+		listener.assertTargets("fixed", "frank@example.com");
+		listener.assertTargets("failed", "frank@example.com");
+		listener.assertTargets("cancelled", "frank@example.com");
+		listener.assertTargets("building", "frank@example.com");
+	}
+
+	@Test
+	public void shouldSendSpecificToSingleWithStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
 				"GONG_TEST_TARGET_STATES", "fixed, broken");
@@ -77,7 +96,7 @@ public class ConfigurableNotificationListenerTest {
 	}
 
 	@Test
-	public void shouldSendToMultipleWithMatches() throws Exception {
+	public void shouldSendToMultipleWithStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
 				"GONG_TEST_TARGET_STATES", "fixed, broken",
@@ -100,10 +119,24 @@ public class ConfigurableNotificationListenerTest {
 	}
 
 	@Test
-	public void shouldSendToNoneMatches() throws Exception {
+	public void shouldSendToNoneWithNoMatchingStates() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
 				"GONG_TEST_TARGET_STATES", "broken");
+
+		StageStateChange change = new StageStateChange("pipeline1",
+				10,
+				"stage1",
+				"passed");
+		listener.handlePassed(change);
+
+		assertEquals(0, listener.targets.size());
+	}
+
+	@Test
+	public void shouldSendToNoneWithoutTargetVar() throws Exception {
+		addMockEnvVariables("pipeline1",
+				"SOME_OTHER_VAR", "1234");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,

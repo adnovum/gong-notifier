@@ -1,16 +1,19 @@
-package ch.adnovum.gong.notifier.email;
+package ch.adnovum.gong.notifier;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TemplateHelper {
 
-	public static String fillTemplate(String template, Map<String, Object> values) {
+	private static final Pattern VAR_PATTERN = Pattern.compile("\\{([^}]*)\\}");
 
-		Pattern p = Pattern.compile("\\{([^}]*)\\}");
-		Matcher m = p.matcher(template);
+	public static String fillTemplate(String template, Map<String, Object> values) {
+		if (template == null || template.isEmpty()) {
+			return template;
+		}
+
+		Matcher m = VAR_PATTERN.matcher(template);
 		int k = 0;
 		StringBuilder sb = new StringBuilder();
 		while (m.find()) {
@@ -33,13 +36,6 @@ public class TemplateHelper {
 		}
 
 		return sb.toString();
-	}
-
-	public static void main(String[] args) {
-		Map<String, Object> m = new HashMap<>();
-		m.put("pipeline", "gagag");
-		m.put("stage", "oyoyoy");
-		System.out.println(fillTemplate("hello {pipeline}, stage {stage}!", m));
 	}
 
 }

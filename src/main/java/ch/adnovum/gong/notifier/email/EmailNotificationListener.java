@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.adnovum.gong.notifier.ConfigurableNotificationListener;
+import ch.adnovum.gong.notifier.TemplateHelper;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
@@ -34,7 +35,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 
 	@Override
 	protected void notifyTargets(StageStateChange stateChange, String state, List<String> targets) {
-		LOGGER.info("Email for " + stateChange.getPipelineName() + ": " + String.join(",", targets));
+		LOGGER.debug("Email for " + stateChange.getPipelineName() + ": " + String.join(",", targets));
 		Map<String, Object> templateVals = new HashMap<>();
 		templateVals.put("pipeline", stateChange.getPipelineName());
 		templateVals.put("stage", stateChange.getStageName());
