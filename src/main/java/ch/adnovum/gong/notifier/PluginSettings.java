@@ -3,6 +3,8 @@ package ch.adnovum.gong.notifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.adnovum.gong.notifier.util.GongUtil;
+
 public class PluginSettings {
 	
 	private static final String DEFAULT_SMTP_HOST = "localhost";

@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier.email;
+package ch.adnovum.gong.notifier.util;
 
 import java.util.HashMap;
 import java.util.Map;

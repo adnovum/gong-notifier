@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ch.adnovum.gong.notifier.email.PipelineInfoProvider;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.thoughtworks.go.plugin.api.logging.Logger;

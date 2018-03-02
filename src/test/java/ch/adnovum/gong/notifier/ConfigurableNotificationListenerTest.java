@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import ch.adnovum.gong.notifier.email.PipelineInfoProvider;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier;
+package ch.adnovum.gong.notifier.util;
 
 import static org.junit.Assert.assertEquals;
 

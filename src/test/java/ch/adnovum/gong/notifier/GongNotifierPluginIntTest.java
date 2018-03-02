@@ -1,6 +1,6 @@
 package ch.adnovum.gong.notifier;
 
-import static ch.adnovum.gong.notifier.GongUtil.readResourceString;
+import static ch.adnovum.gong.notifier.util.GongUtil.readResourceString;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;

@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import ch.adnovum.gong.notifier.ConfigurableNotificationListener;
-import ch.adnovum.gong.notifier.TemplateHelper;
+import ch.adnovum.gong.notifier.PipelineInfoProvider;
+import ch.adnovum.gong.notifier.util.TemplateHelper;
 import ch.adnovum.gong.notifier.go.api.PipelineHistory;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.thoughtworks.go.plugin.api.logging.Logger;

@@ -13,13 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import ch.adnovum.gong.notifier.email.CachedPipelineInfoProvider;
 import ch.adnovum.gong.notifier.email.EmailNotificationListener;
 import ch.adnovum.gong.notifier.email.EmailSender;
 import ch.adnovum.gong.notifier.email.JavaxEmailSender;
-import ch.adnovum.gong.notifier.email.PipelineInfoProvider;
 import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
+import ch.adnovum.gong.notifier.util.GongUtil;
 import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;

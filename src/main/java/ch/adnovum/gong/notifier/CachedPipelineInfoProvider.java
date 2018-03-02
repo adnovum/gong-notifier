@@ -1,10 +1,11 @@
-package ch.adnovum.gong.notifier.email;
+package ch.adnovum.gong.notifier;
 
 import java.util.Optional;
 
 import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.PipelineHistory;
+import ch.adnovum.gong.notifier.util.ApiCache;
 
 public class CachedPipelineInfoProvider implements PipelineInfoProvider {
 

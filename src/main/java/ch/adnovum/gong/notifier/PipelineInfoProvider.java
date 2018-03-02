@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier.email;
+package ch.adnovum.gong.notifier;
 
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.PipelineHistory;
