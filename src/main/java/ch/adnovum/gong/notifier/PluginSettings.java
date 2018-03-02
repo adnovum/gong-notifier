@@ -8,7 +8,7 @@ public class PluginSettings {
 	private static final String DEFAULT_SMTP_HOST = "localhost";
 	private static final String DEFAULT_SMTP_PORT = "25";
 	private static final String DEFAULT_SENDER_EMAIL = "gocd@noreply.com";
-	private static final String DEFAULT_SERVER_URL = "https://localhost:8154/go";
+	private static final String DEFAULT_SERVER_URL = "http://localhost:8153/go";
 	private static final String DEFAULT_SERVER_DISPLAY_URL = "https://localhost:8154/go";
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
@@ -64,7 +64,7 @@ public class PluginSettings {
 	}
 
 	public String getServerDisplayUrl() {
-		return valueOrDefault(serverUrl, DEFAULT_SERVER_DISPLAY_URL);
+		return valueOrDefault(serverDisplayUrl, DEFAULT_SERVER_DISPLAY_URL);
 	}
 
 	public void setServerDisplayUrl(String serverDisplayUrl) {

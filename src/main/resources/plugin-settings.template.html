@@ -4,7 +4,7 @@
     <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>SMTP Port:/label>
+    <label>SMTP Port:</label>
     <input type="text" ng-model="smtpPort"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpPort].$error.server">{{ GOINPUTNAME[smtpPort].$error.server }}</span>
 </div>
@@ -14,7 +14,9 @@
     <span class="form_error" ng-show="GOINPUTNAME[senderEmail].$error.server">{{ GOINPUTNAME[senderEmail].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>Server Display URL: <i>for links in the e-mails</i></label>
+    <label>Server Display URL:
+        <br/><i>For links in the e-mails</i>
+    </label>
     <input type="text" ng-model="serverDisplayUrl"/>
     <span class="form_error" ng-show="GOINPUTNAME[serverDisplayUrl].$error.server">{{ GOINPUTNAME[serverDisplayUrl].$error.server }}</span>
 </div>
@@ -29,9 +31,11 @@
     <span class="form_error" ng-show="GOINPUTNAME[bodyTemplate].$error.server">{{ GOINPUTNAME[bodyTemplate].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <label>Server URL: <i>for REST calls</i></label>
-    <input type="text" ng-model="serverUrl"/>
-    <span class="form_error" ng-show="GOINPUTNAME[serverUrl].$error.server">{{ GOINPUTNAME[serverUrl].$error.server }}</span>
+    <label>Server URL:
+        <br/><i>For REST calls</i>
+    </label>
+    <input type="text" ng-model="serverDisplayUrl"/>
+    <span class="form_error" ng-show="GOINPUTNAME[serverDisplayUrl].$error.server">{{ GOINPUTNAME[serverDisplayUrl].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>REST user name:</label>

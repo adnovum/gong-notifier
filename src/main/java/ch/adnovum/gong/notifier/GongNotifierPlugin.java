@@ -122,7 +122,7 @@ public class GongNotifierPlugin implements GoPlugin {
 
 		listeners.add(new DebugNotificationListener());
 		listeners.add(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(),
-				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerUrl()));
+				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerDisplayUrl()));
 	}
 
 	private PluginSettings fetchPluginSettings() {

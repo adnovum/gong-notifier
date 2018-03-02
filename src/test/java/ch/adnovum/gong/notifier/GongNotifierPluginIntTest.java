@@ -47,6 +47,7 @@ public class GongNotifierPluginIntTest {
 		PluginSettings settings = new PluginSettings();
 		settings.setServerUrl("http://localhost:18153/go");
 		settings.setSmtpPort(30025);
+		settings.setServerDisplayUrl("http://mycompany.com/go");
 		DefaultGoApiResponse resp = new DefaultGoApiResponse(200);
 		resp.setResponseBody(new Gson().toJson(settings));
 		when(goAppAccessor.submit(any(GoApiRequest.class))).thenReturn(resp);

@@ -20,17 +20,17 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	private String senderEmail;
 	private String subjectTemplate;
 	private String bodyTemplate;
-	private String serverUrl;
+	private String serverDisplayUrl;
 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
-			String subjectTemplate, String bodyTemplate, String serverUrl) {
+			String subjectTemplate, String bodyTemplate, String serverDisplayUrl) {
 		super(pipelineInfo, EMAIL_ENV_VARIABLE, STATES_SUFFIX);
 
 		this.emailSender = emailSender;
 		this.senderEmail = senderEmail;
 		this.subjectTemplate = subjectTemplate;
 		this.bodyTemplate = bodyTemplate;
-		this.serverUrl = serverUrl;
+		this.serverDisplayUrl = serverDisplayUrl;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 		templateVals.put("pipelineCounter", stateChange.getPipelineCounter());
 		templateVals.put("stageCounter", stateChange.getStageCounter());
 		templateVals.put("state", state);
-		templateVals.put("serverUrl", serverUrl);
+		templateVals.put("serverUrl", serverDisplayUrl);
 
 		String subject = TemplateHelper.fillTemplate(subjectTemplate, templateVals);
 		String body = TemplateHelper.fillTemplate(bodyTemplate, templateVals);;
