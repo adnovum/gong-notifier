@@ -1,28 +1,28 @@
 <div class="form_item_block">
     <label>SMTP Host:</label>
-    <input type="text" ng-model="smtpHost"/>
+    <input type="text" ng-model="smtpHost" placeholder="smtp.mycompany.com"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>SMTP Port:</label>
-    <input type="text" ng-model="smtpPort"/>
+    <input type="text" ng-model="smtpPort" placeholder="25"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpPort].$error.server">{{ GOINPUTNAME[smtpPort].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>From E-mail address:</label>
-    <input type="text" ng-model="senderEmail"/>
+    <input type="text" ng-model="senderEmail" placeholder="gocd@mycompany.com"/>
     <span class="form_error" ng-show="GOINPUTNAME[senderEmail].$error.server">{{ GOINPUTNAME[senderEmail].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>Server Display URL:
         <br/><i>For links in the e-mails</i>
     </label>
-    <input type="text" ng-model="serverDisplayUrl"/>
+    <input type="text" ng-model="serverDisplayUrl" placeholder="http://gocd.mycompany.com/go"/>
     <span class="form_error" ng-show="GOINPUTNAME[serverDisplayUrl].$error.server">{{ GOINPUTNAME[serverDisplayUrl].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>E-mail subject template:</label>
-    <input type="text" ng-model="subjectTemplate"/>
+    <input type="text" ng-model="subjectTemplate"placeholder="Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}"/>
     <span class="form_error" ng-show="GOINPUTNAME[subjectTemplate].$error.server">{{ GOINPUTNAME[subjectTemplate].$error.server }}</span>
 </div>
 <div class="form_item_block">
@@ -34,7 +34,7 @@
     <label>Server URL:
         <br/><i>For REST calls</i>
     </label>
-    <input type="text" ng-model="serverUrl"/>
+    <input type="text" ng-model="serverUrl" placeholder="http://localhost:8153/go"/>
     <span class="form_error" ng-show="GOINPUTNAME[serverUrl].$error.server">{{ GOINPUTNAME[serverUrl].$error.server }}</span>
 </div>
 <div class="form_item_block">

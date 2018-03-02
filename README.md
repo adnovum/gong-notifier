@@ -22,8 +22,8 @@ If you specify nothing else, this e-mail address gets notified for any of the de
 - **cancelled**: Stage was cancelled
 - **passed**: Stage passed
 - **failed**: Stage failed
-- **broken**: Stage is broken
-- **fixed**: Stage is fixed
+- **broken**: Stage previously passed, but now failed
+- **fixed**: Stage previously failed, but now passed
 
 *Note: **broken** and **failed**, as well as **fixed** and **passed**, are mutually exclusive. If a pipeline transitions from **failed**
 to **passed**, only a **fixed** event is triggered, not a **passed** event. This is the same behavior as in the default
@@ -53,3 +53,20 @@ GONG_EMAIL_ADDRESS_2_EVENTS = passed, failed
 GONG_EMAIL_ADDRESS_bananas = frank@example.com
 GONG_EMAIL_ADDRESS_bananas_EVENTS = building
 ```
+
+## Development
+
+### Building
+
+The project uses Gradle as its build tool.
+```
+./gradlew assemble
+```
+This builds the final jar file (which includes all dependencies) in ```build/libs```. 
+
+You can run all tests with:
+```
+./gradlew test
+```
+
+All tests are self-contained and do not require a running GoCD server.

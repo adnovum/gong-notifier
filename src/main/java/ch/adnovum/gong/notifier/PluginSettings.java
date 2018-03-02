@@ -14,8 +14,7 @@ public class PluginSettings {
 	private static final String DEFAULT_SERVER_DISPLAY_URL = "https://localhost:8154/go";
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
-	private static final String DEFAULT_SUBJECT_TEMPLATE = "Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] "
-			+ "{event}";
+	private static final String DEFAULT_SUBJECT_TEMPLATE = "Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}";
 	private static final String DEFAULT_BODY_TEMPLATE = GongUtil.readResourceString("/default-email-body.template.html");
 	
 	public static final Map<String, Field> FIELD_CONFIG = new HashMap<>();
