@@ -16,7 +16,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 
 	private static Logger LOGGER = Logger.getLoggerFor(ConfigurableNotificationListener.class);
 
-	private PipelineInfoProvider pipelineInfo;
+	protected PipelineInfoProvider pipelineInfo;
 	private String targetEnvVariablePrefix;
 	private String targetStatesEnvVariableSuffix;
 
@@ -29,44 +29,45 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 
 	@Override
 	public void handleBuilding(StageStateChange stateChange) {
-		handle(stateChange,"building");
+		handle(stateChange,TransitionState.BUILDING);
 	}
 
 	@Override
 	public void handlePassed(StageStateChange stateChange) {
-		handle(stateChange,"passed");
+		handle(stateChange,TransitionState.PASSED);
 	}
 
 	@Override
 	public void handleFailed(StageStateChange stateChange) {
-		handle(stateChange,"failed");
+		handle(stateChange,TransitionState.FAILED);
 	}
 
 	@Override
 	public void handleBroken(StageStateChange stateChange) {
-		handle(stateChange,"broken");
+		handle(stateChange,TransitionState.BROKEN);
 	}
 
 	@Override
 	public void handleFixed(StageStateChange stateChange) {
-		handle(stateChange,"fixed");
+		handle(stateChange,TransitionState.FIXED);
 	}
 
 	@Override
 	public void handleCancelled(StageStateChange stateChange) {
-		handle(stateChange,"cancelled");
+		handle(stateChange,TransitionState.CANCELLED);
 	}
 
-	private void handle(StageStateChange stateChange, String state) {
-		List<String> targets = lookupTargets(stateChange.getPipelineName(), state);
+	private void handle(StageStateChange stateChange, TransitionState state) {
+		List<String> targets = lookupTargets(stateChange.getPipelineName(), state.getValue());
 		if (targets.isEmpty()) {
+			LOGGER.info("No targets found for " + stateChange.getPipelineName() + " with state " + state.getValue());
 			return;
 		}
 
 		notifyTargets(stateChange, state, targets);
 	}
 
-	protected abstract void notifyTargets(StageStateChange stateChange, String state, List<String> targets);
+	protected abstract void notifyTargets(StageStateChange stateChange, TransitionState state, List<String> targets);
 
 	private List<String> lookupTargets(String pipelineName, String state) {
 		PipelineConfig cfg = pipelineInfo.getPipelineConfig(pipelineName).orElse(null);
@@ -95,5 +96,28 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		return new LinkedList<>(targets.values());
 	}
 
+	public enum TransitionState {
+		BUILDING("building", "is building"),
+		PASSED("passed", "passed"),
+		FAILED("failed", "failed"),
+		FIXED("fixed", "is fixed"),
+		BROKEN("broken", "is broken"),
+		CANCELLED("cancelled", "is cancelled");
 
+		private String value;
+		private String verbString;
+
+		TransitionState(String value, String verbString) {
+			this.value = value;
+			this.verbString = verbString;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public String getVerbString() {
+			return verbString;
+		}
+	}
 }

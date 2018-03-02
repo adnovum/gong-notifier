@@ -1,8 +1,5 @@
 package ch.adnovum.gong.notifier.go.api;
 
-import com.google.gson.Gson;
-import com.thoughtworks.go.plugin.api.logging.Logger;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -10,6 +7,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class GoServerApi {
 
@@ -63,7 +64,7 @@ public class GoServerApi {
 	public static void main(String[] args) throws IOException {
 		new GoServerApi("http://localhost:8153/go")
 				.setAdminCredentials("admin", "password")
-				.fetchPipelineConfig("pipeline1")
-				.ifPresent(c -> System.out.println(c.name));
+				.fetchPipelineHistory("pipeline1")
+				.ifPresent(c -> System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(c)));
 	}
 }

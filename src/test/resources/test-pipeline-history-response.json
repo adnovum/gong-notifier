@@ -11,7 +11,7 @@
 								"id": 1,
 								"modified_time": 1434957613000,
 								"user_name": "Pick E Reader <pick.e.reader@example.com>",
-								"comment": "my hola mundo changes",
+								"comment": "a test commit\n\na test message",
 								"revision": "c194b49db102b705ebc13e604e490ae13ac92d96"
 							}
 						],
@@ -28,7 +28,7 @@
 				"trigger_message": "Forced by anonymous"
 			},
 			"name": "pipeline1",
-			"natural_order": 11,
+			"natural_order": 12,
 			"can_run": true,
 			"comment": null,
 			"stages": [
@@ -38,7 +38,7 @@
 					"jobs": [
 						{
 							"name": "job1",
-							"result": "Failed",
+							"result": "Passed",
 							"state": "Completed",
 							"id": 13,
 							"scheduled_date": 1436172201081
@@ -54,10 +54,10 @@
 					"scheduled": true
 				}
 			],
-			"counter": 11,
+			"counter": 12,
 			"id": 13,
 			"preparing_to_schedule": false,
-			"label": "11"
+			"label": "12"
 		},
 		{
 			"build_cause": {
@@ -87,7 +87,7 @@
 				"trigger_message": "Forced by anonymous"
 			},
 			"name": "pipeline1",
-			"natural_order": 10,
+			"natural_order": 11,
 			"can_run": true,
 			"comment": null,
 			"stages": [
@@ -97,14 +97,14 @@
 					"jobs": [
 						{
 							"name": "job1",
-							"result": "Passed",
+							"result": "Failed",
 							"state": "Completed",
 							"id": 12,
 							"scheduled_date": 1436172122024
 						}
 					],
 					"can_run": true,
-					"result": "Passed",
+					"result": "Failed",
 					"approval_type": "success",
 					"counter": "1",
 					"id": 12,
@@ -113,10 +113,10 @@
 					"scheduled": true
 				}
 			],
-			"counter": 10,
+			"counter": 11,
 			"id": 12,
 			"preparing_to_schedule": false,
-			"label": "10"
+			"label": "11"
 		}
 	],
 	"pagination": {

@@ -176,8 +176,8 @@ public class ConfigurableNotificationListenerTest {
 		}
 
 		@Override
-		protected void notifyTargets(StageStateChange stateChange, String state, List<String> targets) {
-			targets.forEach(t -> this.targets.add(new Target(t, state)));
+		protected void notifyTargets(StageStateChange stateChange, TransitionState state, List<String> targets) {
+			targets.forEach(t -> this.targets.add(new Target(t, state.getValue())));
 		}
 
 		private void assertTargets(String expectedState, String... expectedTargets) {

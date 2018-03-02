@@ -78,6 +78,7 @@ public class GongNotifierPluginIntTest {
 		assertEquals(1, emails.length);
 		MimeMessage mail = emails[0];
 		assertEquals("Stage [pipeline1/12/stage1/1] is fixed", mail.getSubject());
-		assertEquals(readResourceString("/test-fixed-stage-email-body.html", getClass()), GreenMailUtil.getBody(mail));
+		assertEquals(readResourceString("/test-fixed-stage-email-body.html", getClass()).replaceAll("\r", ""),
+				GreenMailUtil.getBody(mail).replaceAll("\r", ""));
 	}
 }
