@@ -9,7 +9,7 @@ import ch.adnovum.gong.notifier.util.ApiCache;
 
 public class CachedPipelineInfoProvider implements PipelineInfoProvider {
 
-	private static final long MINUTES = 60 * 1000;
+	private static final long MINUTES = 60 * 1000L;
 	private static final long SECONDS = 1000;
 
 	private ApiCache<String, PipelineConfig> configCache;

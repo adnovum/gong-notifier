@@ -59,7 +59,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	private void handle(StageStateChange stateChange, Event event) {
 		List<String> targets = lookupTargets(stateChange.getPipelineName(), event.getValue());
 		if (targets.isEmpty()) {
-			LOGGER.info("No targets found for " + stateChange.getPipelineName() + " with event " + event.getValue());
+			LOGGER.debug("No targets found for " + stateChange.getPipelineName() + " with event " + event.getValue());
 			return;
 		}
 
