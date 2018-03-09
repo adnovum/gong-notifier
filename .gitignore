@@ -1,5 +1,5 @@
 .gradle/
-.idea/workspace.xml
+.idea
 *.iml
 .idea/libraries/
 build/

@@ -1,1 +1,4 @@
 rootProject.name = 'gong-notifier'
+
+include 'gong-notifier-base',
+        'gong-notifier-email'

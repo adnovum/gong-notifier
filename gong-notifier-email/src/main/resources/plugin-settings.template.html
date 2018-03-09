@@ -1,0 +1,25 @@
+<div class="form_item_block">
+    <label>SMTP Host:</label>
+    <input type="text" ng-model="smtpHost" placeholder="smtp.mycompany.com"/>
+    <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>SMTP Port:</label>
+    <input type="text" ng-model="smtpPort" placeholder="25"/>
+    <span class="form_error" ng-show="GOINPUTNAME[smtpPort].$error.server">{{ GOINPUTNAME[smtpPort].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>From E-mail address:</label>
+    <input type="text" ng-model="senderEmail" placeholder="gocd@mycompany.com"/>
+    <span class="form_error" ng-show="GOINPUTNAME[senderEmail].$error.server">{{ GOINPUTNAME[senderEmail].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>E-mail subject template:</label>
+    <input type="text" ng-model="subjectTemplate"placeholder="Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}"/>
+    <span class="form_error" ng-show="GOINPUTNAME[subjectTemplate].$error.server">{{ GOINPUTNAME[subjectTemplate].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>E-mail subject template:</label>
+    <textarea rows="6" cols="50" ng-model="bodyTemplate"/>
+    <span class="form_error" ng-show="GOINPUTNAME[bodyTemplate].$error.server">{{ GOINPUTNAME[bodyTemplate].$error.server }}</span>
+</div>

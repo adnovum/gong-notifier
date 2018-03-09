@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="${rootProject.group}.email" version="1">
+    <about>
+        <name>Gong Notifier E-Mail</name>
+        <version>$version</version>
+        <target-go-version>$goVersion</target-go-version>
+        <description>Plugin to send e-mail notifications based on pipeline configurations</description>
+        <vendor>
+            <name>AdNovum Informatik AG</name>
+            <url></url>
+        </vendor>
+    </about>
+</go-plugin>
