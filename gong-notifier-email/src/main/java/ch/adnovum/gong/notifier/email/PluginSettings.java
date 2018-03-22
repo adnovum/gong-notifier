@@ -1,8 +1,9 @@
-package ch.adnovum.gong.notifier;
+package ch.adnovum.gong.notifier.email;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.adnovum.gong.notifier.PluginSettingsBase;
 import ch.adnovum.gong.notifier.go.api.SettingsField;
 import ch.adnovum.gong.notifier.util.GongUtil;
 

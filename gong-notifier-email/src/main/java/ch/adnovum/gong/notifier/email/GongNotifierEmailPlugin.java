@@ -1,8 +1,9 @@
-package ch.adnovum.gong.notifier;
+package ch.adnovum.gong.notifier.email;
 
-import ch.adnovum.gong.notifier.email.EmailNotificationListener;
-import ch.adnovum.gong.notifier.email.EmailSender;
-import ch.adnovum.gong.notifier.email.JavaxEmailSender;
+import ch.adnovum.gong.notifier.CachedPipelineInfoProvider;
+import ch.adnovum.gong.notifier.DebugNotificationListener;
+import ch.adnovum.gong.notifier.GongNotifierPluginBase;
+import ch.adnovum.gong.notifier.PipelineInfoProvider;
 import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.util.GongUtil;
 import com.google.gson.Gson;

@@ -8,3 +8,13 @@ subprojects {
         jcenter()
     }
 }
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    // Include the results from the `test` task in all subprojects
+    reportOn subprojects*.test
+}
+
+task test {
+    finalizedBy testReport
+}

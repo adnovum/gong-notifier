@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier;
+package ch.adnovum.gong.notifier.email;
 
 import static ch.adnovum.gong.notifier.util.GongUtil.readResourceString;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
