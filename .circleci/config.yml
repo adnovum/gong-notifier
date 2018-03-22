@@ -37,8 +37,13 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-        
-      # run tests!
+      
+      - run: gradle assemble
+
+      - store_artifacts:
+          path: gong-notifier-email/build/libs
+          destination: email-jars
+
       - run: gradle test
 
       - store_test_results:
@@ -48,9 +53,6 @@ jobs:
           path: build/reports/allTests
           destination: test-report
 
-      - store_artifacts:
-          path: gong-notifier-email/build/libs
-          destination: email-jars
       
 
 
