@@ -38,7 +38,8 @@ public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 
 		addListener(new DebugNotificationListener());
 		addListener(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(),
-				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerDisplayUrl()));
+				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerDisplayUrl(),
+				settings.getTimezone()));
 	}
 
 	@Override

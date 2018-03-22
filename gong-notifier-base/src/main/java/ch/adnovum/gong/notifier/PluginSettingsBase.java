@@ -12,12 +12,12 @@ public class PluginSettingsBase {
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
 	
-	public static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
+	public static final Map<String, SettingsField> BASE_FIELD_CONFIG = new HashMap<>();
 	static {
-		FIELD_CONFIG.put("serverUrl", new SettingsField("Server URL", DEFAULT_SERVER_URL, false, false, 0));
-		FIELD_CONFIG.put("serverDisplayUrl", new SettingsField("Server Display URL", DEFAULT_SERVER_DISPLAY_URL, false, false, 0));
-		FIELD_CONFIG.put("restUser", new SettingsField("Rest User", DEFAULT_REST_USER, false, false, 0));
-		FIELD_CONFIG.put("restPassword", new SettingsField("Rest Password", DEFAULT_REST_PASSWORD, false, true, 0));
+		BASE_FIELD_CONFIG.put("serverUrl", new SettingsField("Server URL", DEFAULT_SERVER_URL, false, false, 0));
+		BASE_FIELD_CONFIG.put("serverDisplayUrl", new SettingsField("Server Display URL", DEFAULT_SERVER_DISPLAY_URL, false, false, 0));
+		BASE_FIELD_CONFIG.put("restUser", new SettingsField("Rest User", DEFAULT_REST_USER, false, false, 0));
+		BASE_FIELD_CONFIG.put("restPassword", new SettingsField("Rest Password", DEFAULT_REST_PASSWORD, false, true, 0));
 	}
 
 	private String serverUrl = DEFAULT_SERVER_URL;

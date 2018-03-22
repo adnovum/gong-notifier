@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import ch.adnovum.gong.notifier.ConfigurableNotificationListener;
 import ch.adnovum.gong.notifier.PipelineInfoProvider;
@@ -25,9 +26,11 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	private String subjectTemplate;
 	private String bodyTemplate;
 	private String serverDisplayUrl;
+	// TODO: extract the modification list generator and then pass timezone to its constructor instead.
+	private String timezone;
 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
-			String subjectTemplate, String bodyTemplate, String serverDisplayUrl) {
+			String subjectTemplate, String bodyTemplate, String serverDisplayUrl, String timezone) {
 		super(pipelineInfo, EMAIL_ENV_VARIABLE, EVENTS_SUFFIX);
 
 		this.emailSender = emailSender;
@@ -35,6 +38,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 		this.subjectTemplate = subjectTemplate;
 		this.bodyTemplate = bodyTemplate;
 		this.serverDisplayUrl = serverDisplayUrl;
+		this.timezone = timezone;
 	}
 
 	@Override
@@ -60,6 +64,10 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 
 	private Optional<String> generateModificationList(StageStateChange stateChange) {
 		final SimpleDateFormat dtFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		if (timezone != null) {
+			dtFmt.setTimeZone(TimeZone.getTimeZone(timezone));
+		}
+
 		final String nl = "\n<br/>";
 
 		Optional<PipelineHistory.BuildCause> res =

@@ -13,6 +13,7 @@ public class PluginSettings extends PluginSettingsBase {
 	private static final String DEFAULT_SENDER_EMAIL = "noreply@localhost.com";
 	private static final String DEFAULT_SUBJECT_TEMPLATE = "Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}";
 	private static final String DEFAULT_BODY_TEMPLATE = GongUtil.readResourceString("/default-email-body.template.html");
+	private static final String DEFAULT_TIMEZONE = null;
 	
 	public static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
 	static {
@@ -28,6 +29,7 @@ public class PluginSettings extends PluginSettingsBase {
 	private String senderEmail = DEFAULT_SENDER_EMAIL;
 	private String subjectTemplate = DEFAULT_SUBJECT_TEMPLATE;
 	private String bodyTemplate = DEFAULT_BODY_TEMPLATE;
+	private String timezone = DEFAULT_TIMEZONE;
 	
 	public String getSmtpHost() {
 		return valueOrDefault(smtpHost, DEFAULT_SMTP_HOST);
@@ -67,6 +69,14 @@ public class PluginSettings extends PluginSettingsBase {
 
 	public void setBodyTemplate(String bodyTemplate) {
 		this.bodyTemplate = bodyTemplate;
+	}
+
+	String getTimezone() {
+		return valueOrDefault(timezone, DEFAULT_TIMEZONE);
+	}
+
+	void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 	private static String valueOrDefault(String value, String defaultValue) {

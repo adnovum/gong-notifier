@@ -58,7 +58,7 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 		this.pluginId = pluginId;
 		this.settingsClass = settingsClass;
 		this.settingsFields = new HashMap<>();
-		this.settingsFields.putAll(PluginSettingsBase.FIELD_CONFIG);
+		this.settingsFields.putAll(PluginSettingsBase.BASE_FIELD_CONFIG);
 		this.settingsFields.putAll(settingsFields);
 		this.settingsTemplate = GongUtil.readResourceString("/plugin-settings-base.template.html") + settingsTemplate;
 	}
