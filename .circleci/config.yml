@@ -41,5 +41,9 @@ jobs:
       # run tests!
       - run: gradle test
 
+      - store_artifacts:
+          path: gong-notifier-email/build/test-results/test
+          destination: gong-notifier-email-test
+
 
 
