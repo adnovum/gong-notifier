@@ -48,5 +48,10 @@ jobs:
           path: build/reports/allTests
           destination: test-report
 
+      - store_artifacts:
+          path: gong-notifier-email/build/libs
+          destination: email-jars
+      
+
 
 
