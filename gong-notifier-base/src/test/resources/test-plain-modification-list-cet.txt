@@ -1,0 +1,9 @@
+Git: URL: https://github.com/gocd/gocd, Branch: master
+revision: c194b49db102b705ebc13e604e490ae13ac92d96, modified by Pick E Reader <pick.e.reader@example.com> on 2015-06-22 09:20:13
+a test commit
+
+a test message
+
+Git: URL: https://github.com/gocd/gocd, Branch: master
+revision: f882bcee2141e79a87282541f882bcee2141e7fb, modified by Frank Bob <frank.bob@example.com> on 2014-11-02 20:46:53
+this is a test commit

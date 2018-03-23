@@ -38,9 +38,7 @@ public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 		EmailSender sender = new JavaxEmailSender(settings.getSmtpHost(), settings.getSmtpPort());
 
 		addListener(new DebugNotificationListener());
-		addListener(new EmailNotificationListener(pipelineInfo, sender, settings.getSenderEmail(),
-				settings.getSubjectTemplate(), settings.getBodyTemplate(), settings.getServerDisplayUrl(),
-				settings.getTimezone()));
+		addListener(new EmailNotificationListener(pipelineInfo, sender, settings));
 	}
 
 	@Override

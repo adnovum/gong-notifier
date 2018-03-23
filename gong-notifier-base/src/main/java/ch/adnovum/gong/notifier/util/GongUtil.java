@@ -34,4 +34,11 @@ public class GongUtil {
 	public static String readResourceString(String resourceUrl) {
 		return readResourceString(resourceUrl, GongUtil.class);
 	}
+
+
+	public static String escapeHtml(String str) {
+		return str == null ? "" : str
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;");
+	}
 }

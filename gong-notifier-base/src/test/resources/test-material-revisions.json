@@ -1,0 +1,40 @@
+[
+	{
+		"modifications": [
+			{
+				"email_address": null,
+				"id": 1,
+				"modified_time": 1434957613000,
+				"user_name": "Pick E Reader <pick.e.reader@example.com>",
+				"comment": "a test commit\n\na test message",
+				"revision": "c194b49db102b705ebc13e604e490ae13ac92d96"
+			}
+		],
+		"material": {
+			"description": "URL: https://github.com/gocd/gocd, Branch: master",
+			"fingerprint": "f6e7a3899c55e1682ffb00383bdf8f882bcee2141e79a8728254190a1fddcf4f",
+			"type": "Git",
+			"id": 1
+		},
+		"changed": false
+	},
+	{
+		"modifications": [
+			{
+				"email_address": null,
+				"id": 2,
+				"modified_time": 1414957613000,
+				"user_name": "Frank Bob <frank.bob@example.com>",
+				"comment": "this is a test commit",
+				"revision": "f882bcee2141e79a87282541f882bcee2141e7fb"
+			}
+		],
+		"material": {
+			"description": "URL: https://github.com/gocd/gocd, Branch: master",
+			"fingerprint": "f6e7a3899c55e1682ffb00383bdf8f882bcee2141e79a8728254190a1fddcf4f",
+			"type": "Git",
+			"id": 1
+		},
+		"changed": false
+	}
+]
