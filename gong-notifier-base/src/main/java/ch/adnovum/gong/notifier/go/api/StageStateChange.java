@@ -31,6 +31,7 @@ public class StageStateChange {
 		pipeline = new Pipeline();
 		pipeline.name = pipelineName;
 		pipeline.stage = new Stage();
+		pipeline.counter = counter;
 		pipeline.stage.name = stageName;
 		pipeline.stage.state = stageState;
 	}

@@ -1,6 +1,6 @@
 package ch.adnovum.gong.notifier.email;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -19,7 +19,7 @@ public class JavaxEmailSender implements EmailSender {
 	}
 
 	@Override
-	public void sendMail(String sender, List<String> recipients, String subject, String body) throws Exception {
+	public void sendMail(String sender, Collection<String> recipients, String subject, String body) throws Exception {
 		Properties properties = System.getProperties();
 		properties.setProperty("mail.smtp.host", smtpHost);
 		properties.put("mail.smtp.port", Integer.toString(smtpPort));

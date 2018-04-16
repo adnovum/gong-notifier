@@ -1,20 +1,25 @@
 package ch.adnovum.gong.notifier.email;
 
-import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class TestEmailSender implements EmailSender {
 
 	private List<SentMail> sentMails = new LinkedList<>();
 
 	@Override
-	public void sendMail(String sender, List<String> recipients, String subject, String body) throws Exception {
+	public void sendMail(String sender, Collection<String> recipients, String subject, String body) throws Exception {
 		sentMails.add(new SentMail(sender, new HashSet<>(recipients), subject, body));
 	}
 
-	public void assertMail(List<String> recipients, String subjectContains) {
+	public void assertMail(Collection<String> recipients, String subjectContains) {
 		Set<String> expected = new HashSet<>(recipients);
 		Optional<SentMail> mail = sentMails.stream()
 				.filter(m -> m.recipients.equals(expected) && m.subject.contains(subjectContains))

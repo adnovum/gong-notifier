@@ -2,8 +2,8 @@ package ch.adnovum.gong.notifier.email;
 
 import static ch.adnovum.gong.notifier.util.GongUtil.escapeHtml;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,7 +47,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	}
 
 	@Override
-	protected void notifyTargets(StageStateChange stateChange, Event event, List<String> targets) {
+	protected void notifyTargets(StageStateChange stateChange, Event event, Collection<String> targets) {
 		LOGGER.debug("Email for " + stateChange.getPipelineName() + ": " + String.join(",", targets));
 		Map<String, Object> templateVals = new HashMap<>();
 		templateVals.put("pipeline", escapeHtml(stateChange.getPipelineName()));

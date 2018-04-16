@@ -35,7 +35,6 @@ public class GongUtil {
 		return readResourceString(resourceUrl, GongUtil.class);
 	}
 
-
 	public static String escapeHtml(String str) {
 		return str == null ? "" : str
 				.replaceAll("<", "&lt;")

@@ -8,6 +8,7 @@ version = baseVersion
 dependencies {
     compile "cd.go.plugin:go-plugin-api:$goVersion"
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.google.guava:guava:24.1-jre'
 
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
