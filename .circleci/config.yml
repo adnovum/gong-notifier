@@ -44,7 +44,7 @@ jobs:
           path: gong-notifier-email/build/libs
           destination: email-jars
 
-      - run: gradle test
+      - run: gradle check
 
       - store_test_results:
           path: gong-notifier-email/build/test-results/test
