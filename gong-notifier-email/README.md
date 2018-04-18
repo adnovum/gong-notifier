@@ -10,22 +10,24 @@ There are a number of global configuration settings for the plugin that can be s
 
 None of these settings are *required* but it's likely that the defaults do not match your setup.
 
-* **SMTP Host**
+The property keys are listed in brackets and can be used to configure the plugin via the GoCD REST API.
+
+* **SMTP Host (smtpHost)**
   * SMTP server host via which to send mails
   * **Default:** ```localhost```
-* **SMTP Port** 
+* **SMTP Port (smtpPort)** 
   * Port on which to connect to SMTP server 
   * **Default:** ```25```
-* **From E-mail address:** 
+* **From E-mail address (senderEmail)** 
   * E-Mail address to use as sender
   * **Default:** ```noreply@localhost.com```
-* **Server Display URL:** 
-  * The base url to use when linking to the GoCd GUI in mails 
+* **Server Display URL (serverDisplayUrl)** 
+  * The base url to use when linking to the GoCD GUI in mails 
   * **Default:** ```https://localhost:8154/go```
-* **E-Mail subject template:**
+* **E-Mail subject template (subjectTemplate)**
   * The template to use for the E-Mail subject. Allows using certain templating variables. See below.
   * **Default:**: ```Stage [{pipeline}/{pipelineCounter}/{stage}/{stageCounter}] {event}``` 
-* **E-Mail body template:**
+* **E-Mail body template (bodyTemplate)**
   * The template to use for the E-Mail body. Allows using certain templating variables. See below.
   * **Default:**:
     ``` 
@@ -35,13 +37,13 @@ None of these settings are *required* but it's likely that the defaults do not m
     <br/>
     <br/>{modificationList}
     ``` 
-* **REST URL:** 
+* **REST URL (serverUrl)** 
   * The base url to use when making REST calls to the GoCD server 
   * **Default:** ```http://localhost:8153/go```
-* **REST user name:** 
+* **REST user name (restName)** 
   * The user to use when authorizing against an admin REST interface of the GoCD server 
   * **Default:** [none]
-* **REST user password:** 
+* **REST user password (restPassword)** 
   * The password to use when authorizing against an admin REST interface of the GoCD server 
   * **Default:** [none]
   
@@ -61,7 +63,7 @@ Templating is limited to replacing simple variables with their values. The follo
 
 ## Pipeline notification configuration
 
-Each pipeline can specify whom to e-mail when a stage change event occurs.
+Each pipeline can specify whom to e-mail when an event occurs.
 The notification settings are done via pipeline environment variables.
 
 ```GONG_EMAIL_ADDRESS``` allows you to set one or more e-mail addresses to notify. Example:
@@ -75,7 +77,7 @@ Example with multiple addresses:
 GONG_EMAIL_ADDRESS = bob@example.com, alice@example.com
 ```
 
-If you specify nothing else, thes e-mail addresses are notified for any of the default stage change events:
+If you specify nothing else, these e-mail addresses are notified for any of the default stage change events:
 
 - **building**: Stage is building
 - **cancelled**: Stage was cancelled
@@ -90,7 +92,7 @@ to **passed**, only a **fixed** event is triggered, not a **passed** event. This
 
 ### Filtering by event
 
-If only specific event changes should trigger a notification, you can use ```GONG_EMAIL_ADDRESS_EVENTS``` and list the events
+If only specific events should trigger a notification, you can use ```GONG_EMAIL_ADDRESS_EVENTS``` and list the events
 you're interested in as a comma-separated list. Example:
 
 ```
