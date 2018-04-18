@@ -153,7 +153,7 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 
 		final StageStateChange stateChange = gson.fromJson(request.requestBody(), StageStateChange.class);
 		String newState = stateChange.getState();
-		String oldState = getPipelineInfoProvider().getPipelineHistory(stateChange.getPipelineName())
+		String oldState = getPipelineInfoProvider().getPipelineHistory(stateChange.getPipelineName(), stateChange.getPipelineCounter())
 				.flatMap(h -> h.getPreviousStageResult(stateChange.getStageName(), stateChange.getPipelineCounter()))
 				.orElse(null);
 		if (oldState == null) {

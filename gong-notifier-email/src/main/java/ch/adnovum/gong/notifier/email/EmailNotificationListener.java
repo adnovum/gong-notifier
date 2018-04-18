@@ -68,7 +68,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	}
 
 	private Optional<String> generateModificationList(StageStateChange stateChange) {
-		return pipelineInfo.getPipelineHistory(stateChange.getPipelineName())
+		return pipelineInfo.getPipelineHistory(stateChange.getPipelineName(), stateChange.getPipelineCounter())
 					.flatMap(h -> h.getCurrentBuildCause(stateChange.getPipelineCounter()))
 					.map(b -> b.materialRevisions)
 					.map(modListGenerator::generateModificationList);

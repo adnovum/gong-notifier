@@ -2,20 +2,21 @@ package ch.adnovum.gong.notifier;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import ch.adnovum.gong.notifier.util.SessionCache;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public abstract class ConfigurableNotificationListener implements NotificationListener {
@@ -25,22 +26,18 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	protected PipelineInfoProvider pipelineInfo;
 	private String targetEnvVariablePrefix;
 	private String targetEventsEnvVariableSuffix;
-	private Cache<String, PipelineTargetConfig> configs;
+	private SessionCache<String, Collection<TargetConfig>, Integer> routingConfigs;
 
 	public ConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String targetEnvVariablePrefix,
 			String targetEventsEnvVariableSuffix) {
 		this.pipelineInfo = pipelineInfo;
 		this.targetEnvVariablePrefix = targetEnvVariablePrefix;
 		this.targetEventsEnvVariableSuffix = targetEventsEnvVariableSuffix;
-		this.configs = CacheBuilder.newBuilder()
-				.expireAfterWrite(5, TimeUnit.MINUTES)
-				.build();
+		this.routingConfigs = new SessionCache<>(5, TimeUnit.MINUTES, 1000, this::fetchPipelineTargetConfig);
 	}
 
 	public void setConfigCacheTTL(long duration, TimeUnit timeUnit) {
-		this.configs = CacheBuilder.newBuilder()
-				.expireAfterWrite(duration, timeUnit)
-				.build();
+		this.routingConfigs = new SessionCache<>(duration, timeUnit, 1000, this::fetchPipelineTargetConfig);
 	}
 
 	@Override
@@ -86,25 +83,21 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	protected abstract void notifyTargets(StageStateChange stateChange, Event event, Collection<String> targets);
 
 	private Collection<String> lookupTargets(StageStateChange stateChange, String event) {
-		String sessionKey = computeSessionKey(stateChange);
-		PipelineTargetConfig pipelineTargetConfig = configs.getIfPresent(stateChange.getPipelineName());
-		if (pipelineTargetConfig == null || !pipelineTargetConfig.sessionKey.equals(sessionKey)) {
-			LOGGER.debug("No cached config for " + stateChange.getPipelineName() + " session " + sessionKey + ", loading it.");
-			PipelineConfig cfg = pipelineInfo.getPipelineConfig(stateChange.getPipelineName()).orElse(null);
-			if (cfg == null) {
-				LOGGER.error("Could not retrieve pipeline config for pipeline " + stateChange.getPipelineName());
-				return new LinkedList<>();
-			}
+		return routingConfigs.fetch(stateChange.getPipelineName(), stateChange.getPipelineCounter())
+				.map(rules -> computeApplicableTargets(rules, stateChange, event))
+				.orElse(Collections.emptySet());
+	}
 
-			Collection<TargetConfig> targetCfgs = readTargetsFromPipelineConfig(cfg);
-			pipelineTargetConfig = new PipelineTargetConfig(sessionKey, targetCfgs);
-			configs.put(stateChange.getPipelineName(), pipelineTargetConfig);
-		}
-
-		return pipelineTargetConfig.targetConfigs.stream()
+	private Set<String> computeApplicableTargets(Collection<TargetConfig> rules, StageStateChange stateChange, String event) {
+		return rules.stream()
 				.filter(c -> c.applies(stateChange.getStageName(), event))
 				.flatMap(c -> c.targets.stream())
 				.collect(Collectors.toSet());
+	}
+
+	private Optional<Collection<TargetConfig>> fetchPipelineTargetConfig(String pipelineName, int pipelineCounter) {
+		return pipelineInfo.getPipelineConfig(pipelineName, pipelineCounter)
+				.map(this::readTargetsFromPipelineConfig);
 	}
 
 	private String computeSessionKey(StageStateChange stateChange) {

@@ -2,6 +2,8 @@ package ch.adnovum.gong.notifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -291,7 +293,7 @@ public class ConfigurableNotificationListenerTest {
 			cfg.addEnvironmentVariable(settings[i], settings[i + 1]);
 		}
 
-		when(infoProvider.getPipelineConfig(pipelineName)).thenReturn(Optional.of(cfg));
+		when(infoProvider.getPipelineConfig(eq(pipelineName), anyInt())).thenReturn(Optional.of(cfg));
 	}
 
 	private class TestConfigurableNotificationListener extends ConfigurableNotificationListener {

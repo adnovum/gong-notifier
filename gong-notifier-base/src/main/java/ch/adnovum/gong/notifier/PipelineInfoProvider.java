@@ -1,12 +1,12 @@
 package ch.adnovum.gong.notifier;
 
+import java.util.Optional;
+
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.PipelineHistory;
 
-import java.util.Optional;
-
 public interface PipelineInfoProvider {
 
-	Optional<PipelineConfig> getPipelineConfig(String pipelineName);
-	Optional<PipelineHistory> getPipelineHistory(String pipelineName);
+	Optional<PipelineConfig> getPipelineConfig(String pipelineName, int pipelineCounter);
+	Optional<PipelineHistory> getPipelineHistory(String pipelineName, int pipelineCounter);
 }
