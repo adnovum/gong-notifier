@@ -153,12 +153,17 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 
 		final StageStateChange stateChange = gson.fromJson(request.requestBody(), StageStateChange.class);
 		String newState = stateChange.getState();
-		String oldState = getPipelineInfoProvider().getPipelineHistory(stateChange.getPipelineName(), stateChange.getPipelineCounter())
-				.flatMap(h -> h.getPreviousStageResult(stateChange.getStageName(), stateChange.getPipelineCounter()))
-				.orElse(null);
-		if (oldState == null) {
-			LOGGER.warn("Could not get previous state of " + stateChange.getPipelineName() + "/" + stateChange.getPipelineCounter()
-				+ "/" + stateChange.getStageName());
+		String oldState = null;
+
+		if (stateChange.getPipelineCounter() > 1) {
+			oldState = getPipelineInfoProvider().getPipelineHistory(stateChange.getPipelineName(), stateChange.getPipelineCounter())
+					.flatMap(h -> h.getPreviousStageResult(stateChange.getStageName(), stateChange.getPipelineCounter()))
+					.orElse(null);
+
+			if (oldState == null) {
+				LOGGER.warn("Could not get previous state of " + stateChange.getPipelineName() + "/" +
+						stateChange.getPipelineCounter() + "/" + stateChange.getStageName());
+			}
 		}
 
 		final BiConsumer<NotificationListener, StageStateChange> fn;
