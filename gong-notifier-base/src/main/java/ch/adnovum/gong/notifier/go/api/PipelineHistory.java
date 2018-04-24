@@ -15,7 +15,7 @@ public class PipelineHistory {
 		return pipelines.stream()
 				.filter(p -> p.counter < currentPipelineCounter)
 				.flatMap(p -> p.stages.stream())
-				.filter(s -> s.name.equals(stageName) && !GoApiConstants.STATUS_UNKNOWN.equals(s.result))
+				.filter(s -> s.name.equals(stageName) && s.result != null && !GoApiConstants.STATUS_UNKNOWN.equals(s.result))
 				.map(s -> s.result)
 				.findFirst();
 	}
