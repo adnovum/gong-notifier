@@ -92,11 +92,11 @@ to **passed**, only a **fixed** event is triggered, not a **passed** event. This
 
 ### Filtering by event
 
-If only specific events should trigger a notification, you can use ```GONG_EMAIL_ADDRESS_EVENTS``` and list the events
+If only specific events should trigger a notification, you can use ```GONG_EMAIL_EVENTS``` and list the events
 you're interested in as a comma-separated list. Example:
 
 ```
-GONG_EMAIL_ADDRESS_EVENTS = broken,fixed
+GONG_EMAIL_EVENTS = broken,fixed
 ```
 
 ### Filtering by event and stage
@@ -105,27 +105,27 @@ You can also use different triggers for different pipeline stages. For example, 
 about failures of the `deploy` stage, you can configure this like so:
 
 ```
-GONG_EMAIL_ADDRESS_EVENTS = deploy.failed
+GONG_EMAIL_EVENTS = deploy.failed
 ```
 
 If you're interested in getting all events but only for a specific stage, use `all` instead of a specific event:
 ```
-GONG_EMAIL_ADDRESS_EVENTS = deploy.all
+GONG_EMAIL_EVENTS = deploy.all
 ```
 
 
 ### Multiple targets
 
 You can specify multiple different notification targets with different event filters by using an arbitrary suffix after
-```GONG_EMAIL_ADDRESS```. Example:
+```GONG_EMAIL```. Example:
 
 ```
-GONG_EMAIL_ADDRESS_1 = bob@example.com
-GONG_EMAIL_ADDRESS_1_EVENTS = broken,fixed
+GONG_EMAIL_1_ADDRESS = bob@example.com
+GONG_EMAIL_1_EVENTS = broken,fixed
  
-GONG_EMAIL_ADDRESS_2 = sarah@example.com
-GONG_EMAIL_ADDRESS_2_EVENTS = passed, failed
+GONG_EMAIL_2_ADDRESS = sarah@example.com
+GONG_EMAIL_2_EVENTS = passed, failed
  
-GONG_EMAIL_ADDRESS_bananas = frank@example.com
-GONG_EMAIL_ADDRESS_bananas_EVENTS = deploy.building
+GONG_EMAIL_bananas_ADDRESS = frank@example.com
+GONG_EMAIL_bananas_EVENTS = deploy.building
 ```

@@ -44,7 +44,8 @@ public class ConfigurableNotificationListenerTest {
 	@Before
 	public void setup() {
 		listener = new TestConfigurableNotificationListener(infoProvider,
-				"GONG_TEST_TARGET",
+				"GONG_TEST",
+				"_TARGET",
 				"_EVENTS");
 	}
 
@@ -98,7 +99,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldRouteSpecificEventsToSingleTarget() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "fixed, broken");
+				"GONG_TEST_EVENTS", "fixed, broken");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -115,11 +116,11 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldRouteSpecificEventsToMultipleTargets() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "fixed, broken",
-				"GONG_TEST_TARGET_2", "zonk@example.com",
-				"GONG_TEST_TARGET_2_EVENTS", "failed",
-				"GONG_TEST_TARGET_bla", "rop@example.com",
-				"GONG_TEST_TARGET_bla_EVENTS", "building, failed");
+				"GONG_TEST_EVENTS", "fixed, broken",
+				"GONG_TEST_2_TARGET", "zonk@example.com",
+				"GONG_TEST_2_EVENTS", "failed",
+				"GONG_TEST_bla_TARGET", "rop@example.com",
+				"GONG_TEST_bla_EVENTS", "building, failed");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -138,7 +139,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldRouteToNoTargetsWithoutMatching() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "broken");
+				"GONG_TEST_EVENTS", "broken");
 
 		StageStateChange change = new StageStateChange("pipeline1",
 				10,
@@ -167,7 +168,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldRouteForSpecificStagesAndEvents() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "stage1.fixed, stage2.broken");
+				"GONG_TEST_EVENTS", "stage1.fixed, stage2.broken");
 
 		StageStateChange change1 = new StageStateChange("pipeline1",
 				10,
@@ -192,7 +193,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldRouteForSpecificStagesAndAllEvents() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "stage2.broken, stage1.all");
+				"GONG_TEST_EVENTS", "stage2.broken, stage1.all");
 
 		StageStateChange change1 = new StageStateChange("pipeline1",
 				10,
@@ -208,7 +209,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldHandleInvalidRoutingConfig() throws Exception {
 		// No actual targets definition
 		addMockEnvVariables("pipeline1",
-				"GONG_TEST_TARGET_EVENTS", "broken");
+				"GONG_TEST_EVENTS", "broken");
 
 		StageStateChange change1 = new StageStateChange("pipeline1",
 				10,
@@ -224,7 +225,7 @@ public class ConfigurableNotificationListenerTest {
 	public void shouldUpdateConfigForDifferentRun() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "broken");
+				"GONG_TEST_EVENTS", "broken");
 
 		StageStateChange change1 = new StageStateChange("pipeline1",
 				10,
@@ -238,7 +239,7 @@ public class ConfigurableNotificationListenerTest {
 		// Now change the config
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "fixed");
+				"GONG_TEST_EVENTS", "fixed");
 
 		// And pretend to be in the same run -> should still be using the old config
 		listener.clear();
@@ -261,7 +262,7 @@ public class ConfigurableNotificationListenerTest {
 
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "broken");
+				"GONG_TEST_EVENTS", "broken");
 
 		StageStateChange change1 = new StageStateChange("pipeline1",
 				10,
@@ -275,7 +276,7 @@ public class ConfigurableNotificationListenerTest {
 		// Now change the config
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
-				"GONG_TEST_TARGET_EVENTS", "fixed");
+				"GONG_TEST_EVENTS", "fixed");
 
 		// And wait for the cache to expire
 		Thread.sleep(300L);
@@ -312,9 +313,9 @@ public class ConfigurableNotificationListenerTest {
 
 		private List<Target> targets = new LinkedList<>();
 
-		public TestConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String targetEnvVariablePrefix,
-				String targetStatesEnvVariableSuffix) {
-			super(pipelineInfo, targetEnvVariablePrefix, targetStatesEnvVariableSuffix);
+		public TestConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String envVariableBase,
+				String targetEnvVariableSuffix, String eventsEnvVariableSuffix) {
+			super(pipelineInfo, envVariableBase, targetEnvVariableSuffix, eventsEnvVariableSuffix);
 		}
 
 		@Override

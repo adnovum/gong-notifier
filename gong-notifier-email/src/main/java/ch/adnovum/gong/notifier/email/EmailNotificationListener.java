@@ -16,7 +16,8 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class EmailNotificationListener extends ConfigurableNotificationListener {
 
-	private static final String EMAIL_ENV_VARIABLE = "GONG_EMAIL_ADDRESS";
+	private static final String EMAIL_ENV_VARIABLE = "GONG_EMAIL";
+	private static final String TARGET_SUFFIX = "_ADDRESS";
 	private static final String EVENTS_SUFFIX = "_EVENTS";
 
 	private static Logger LOGGER = Logger.getLoggerFor(EmailNotificationListener.class);
@@ -30,7 +31,7 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
 			String subjectTemplate, String bodyTemplate, String serverDisplayUrl, ModificationListGenerator modListGenerator) {
-		super(pipelineInfo, EMAIL_ENV_VARIABLE, EVENTS_SUFFIX);
+		super(pipelineInfo, EMAIL_ENV_VARIABLE, TARGET_SUFFIX, EVENTS_SUFFIX);
 
 		this.emailSender = emailSender;
 		this.senderEmail = senderEmail;

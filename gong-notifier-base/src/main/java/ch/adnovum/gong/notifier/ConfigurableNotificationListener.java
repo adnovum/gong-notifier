@@ -24,15 +24,17 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	private static Logger LOGGER = Logger.getLoggerFor(ConfigurableNotificationListener.class);
 
 	protected PipelineInfoProvider pipelineInfo;
-	private String targetEnvVariablePrefix;
-	private String targetEventsEnvVariableSuffix;
+	private String envVariableBase;
+	private String targetEnvVariableSuffix;
+	private String eventsEnvVariableSuffix;
 	private SessionCache<String, Collection<TargetConfig>, Integer> routingConfigs;
 
-	public ConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String targetEnvVariablePrefix,
-			String targetEventsEnvVariableSuffix) {
+	public ConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String envVariableBase,
+			String targetEnvVariableSuffix, String eventsEnvVariableSuffix) {
 		this.pipelineInfo = pipelineInfo;
-		this.targetEnvVariablePrefix = targetEnvVariablePrefix;
-		this.targetEventsEnvVariableSuffix = targetEventsEnvVariableSuffix;
+		this.envVariableBase = envVariableBase;
+		this.targetEnvVariableSuffix = targetEnvVariableSuffix;
+		this.eventsEnvVariableSuffix = eventsEnvVariableSuffix;
 		this.routingConfigs = new SessionCache<>(5, TimeUnit.MINUTES, 1000, this::fetchPipelineTargetConfig);
 	}
 
@@ -107,14 +109,14 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	private Collection<TargetConfig> readTargetsFromPipelineConfig(PipelineConfig cfg) {
 		Map<String, TargetConfig> result = new HashMap<>();
 		for (PipelineConfig.EnvironmentVariable v: cfg.environmentVariables) {
-			if (v.name.startsWith(targetEnvVariablePrefix)) {
-				if (v.name.endsWith(targetEventsEnvVariableSuffix)) {
-					String cfgName = v.name.substring(0, v.name.length() - targetEventsEnvVariableSuffix.length());
+			if (v.name.startsWith(envVariableBase)) {
+				if (v.name.endsWith(eventsEnvVariableSuffix)) {
+					String cfgName = v.name.substring(0, v.name.length() - eventsEnvVariableSuffix.length());
 					TargetConfig tgtCfg = result.computeIfAbsent(cfgName, k -> new TargetConfig());
 					tgtCfg.routingRules = parseRoutingRules(v.value);
 				}
-				else {
-					String cfgName = v.name;
+				else if (v.name.endsWith(targetEnvVariableSuffix)) {
+					String cfgName = v.name.substring(0, v.name.length() - targetEnvVariableSuffix.length());
 					TargetConfig tgtCfg = result.computeIfAbsent(cfgName, k -> new TargetConfig());
 					tgtCfg.targets = new HashSet<>(Arrays.asList(v.value.split("\\s*,\\s*")));
 				}
@@ -126,7 +128,8 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 			String cfgName = e.getKey();
 			TargetConfig tgtCfg = e.getValue();
 			if (tgtCfg.targets == null) {
-				LOGGER.warn("Notification configuration " + cfgName + " is missing a list of targets. Pipeline: " + cfg.name);
+				LOGGER.warn("Notification configuration " + cfgName + " is missing a list of targets. Pipeline: " + cfg.name
+					+ ". There should be an environment variable " + cfgName + targetEnvVariableSuffix);
 				it.remove();
 			}
 		}
@@ -152,17 +155,6 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 			result.add(new RoutingRule(event, stage));
 		}
 		return result;
-	}
-
-	private static class PipelineTargetConfig {
-		String sessionKey;
-		Collection<TargetConfig> targetConfigs;
-
-		PipelineTargetConfig(String sessionKey,
-				Collection<TargetConfig> targetConfigs) {
-			this.sessionKey = sessionKey;
-			this.targetConfigs = targetConfigs;
-		}
 	}
 
 	private static class TargetConfig {
