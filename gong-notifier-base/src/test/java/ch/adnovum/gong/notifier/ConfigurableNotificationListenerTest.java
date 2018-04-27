@@ -27,6 +27,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigurableNotificationListenerTest {
 
+	private static final Set<String> DEFAULT_EVENTS = new HashSet<>(Arrays.asList(
+		"broken", "fixed", "failed"
+	));
+
 	private static final List<BiConsumer<ConfigurableNotificationListener, StageStateChange>> ALL_HANDLERS = Arrays.asList(
 			ConfigurableNotificationListener::handleBroken,
 			ConfigurableNotificationListener::handlePassed,
@@ -54,12 +58,12 @@ public class ConfigurableNotificationListenerTest {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com");
 
-		listener.handlePassed(new StageStateChange("pipeline1",
+		listener.handleBroken(new StageStateChange("pipeline1",
 				10,
 				"stage1",
-				"passed"));
+				"broken"));
 
-		listener.assertTargets("passed", "frank@example.com");
+		listener.assertTargets("broken", "frank@example.com");
 	}
 
 	@Test
@@ -67,16 +71,16 @@ public class ConfigurableNotificationListenerTest {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com, bert@example.com");
 
-		listener.handlePassed(new StageStateChange("pipeline1",
+		listener.handleBroken(new StageStateChange("pipeline1",
 				10,
 				"stage1",
-				"passed"));
+				"broken"));
 
-		listener.assertTargets("passed", "frank@example.com", "bert@example.com");
+		listener.assertTargets("broken", "frank@example.com", "bert@example.com");
 	}
 
 	@Test
-	public void shouldRouteAllEventsToSingleTarget() throws Exception {
+	public void shouldRouteAllDefaultEventsToSingleTarget() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com");
 
@@ -86,13 +90,10 @@ public class ConfigurableNotificationListenerTest {
 				"dummy");
 		ALL_HANDLERS.forEach(h -> h.accept(listener, change));
 
-		assertEquals(6, listener.targets.size());
-		listener.assertTargets("broken", "frank@example.com");
-		listener.assertTargets("passed", "frank@example.com");
+		assertEquals(3, listener.targets.size());
 		listener.assertTargets("fixed", "frank@example.com");
+		listener.assertTargets("broken", "frank@example.com");
 		listener.assertTargets("failed", "frank@example.com");
-		listener.assertTargets("cancelled", "frank@example.com");
-		listener.assertTargets("building", "frank@example.com");
 	}
 
 	@Test
@@ -190,7 +191,7 @@ public class ConfigurableNotificationListenerTest {
 	}
 
 	@Test
-	public void shouldRouteForSpecificStagesAndAllEvents() throws Exception {
+	public void shouldRouteForSpecificStagesAndAllDefaultEvents() throws Exception {
 		addMockEnvVariables("pipeline1",
 				"GONG_TEST_TARGET", "frank@example.com",
 				"GONG_TEST_EVENTS", "stage2.broken, stage1.all");
@@ -202,7 +203,10 @@ public class ConfigurableNotificationListenerTest {
 
 		ALL_HANDLERS.forEach(h -> h.accept(listener, change1));
 
-		assertEquals(ALL_HANDLERS.size(), listener.targets.size());
+		assertEquals(3, listener.targets.size());
+		listener.assertTargetsForStage("stage1", "fixed", "frank@example.com");
+		listener.assertTargetsForStage("stage1", "broken", "frank@example.com");
+		listener.assertTargetsForStage("stage1", "failed", "frank@example.com");
 	}
 
 	@Test
@@ -315,7 +319,7 @@ public class ConfigurableNotificationListenerTest {
 
 		public TestConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String envVariableBase,
 				String targetEnvVariableSuffix, String eventsEnvVariableSuffix) {
-			super(pipelineInfo, envVariableBase, targetEnvVariableSuffix, eventsEnvVariableSuffix);
+			super(pipelineInfo,  envVariableBase, targetEnvVariableSuffix, eventsEnvVariableSuffix, DEFAULT_EVENTS);
 		}
 
 		@Override

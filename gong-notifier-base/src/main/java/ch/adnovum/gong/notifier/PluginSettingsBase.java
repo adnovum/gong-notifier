@@ -1,7 +1,10 @@
 package ch.adnovum.gong.notifier;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import ch.adnovum.gong.notifier.go.api.SettingsField;
 
@@ -11,6 +14,7 @@ public class PluginSettingsBase {
 	private static final String DEFAULT_SERVER_DISPLAY_URL = "https://localhost:8154/go";
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
+	private static final String DEFAULT_EVENTS = "broken, fixed, failed";
 	
 	public static final Map<String, SettingsField> BASE_FIELD_CONFIG = new HashMap<>();
 	static {
@@ -18,12 +22,15 @@ public class PluginSettingsBase {
 		BASE_FIELD_CONFIG.put("serverDisplayUrl", new SettingsField("Server Display URL", DEFAULT_SERVER_DISPLAY_URL, false, false, 0));
 		BASE_FIELD_CONFIG.put("restUser", new SettingsField("Rest User", DEFAULT_REST_USER, false, false, 0));
 		BASE_FIELD_CONFIG.put("restPassword", new SettingsField("Rest Password", DEFAULT_REST_PASSWORD, false, true, 0));
+		BASE_FIELD_CONFIG.put("defaultEvents", new SettingsField("Default notification events", DEFAULT_EVENTS, false, false,
+				0));
 	}
 
 	private String serverUrl = DEFAULT_SERVER_URL;
 	private String serverDisplayUrl = DEFAULT_SERVER_DISPLAY_URL;
 	private String restUser = DEFAULT_REST_USER;
 	private String restPassword = DEFAULT_REST_PASSWORD;
+	private String defaultEvents = DEFAULT_EVENTS;
 
 	public String getServerDisplayUrl() {
 		return valueOrDefault(serverDisplayUrl, DEFAULT_SERVER_DISPLAY_URL);
@@ -55,6 +62,18 @@ public class PluginSettingsBase {
 
 	public void setRestPassword(String restPassword) {
 		this.restPassword = restPassword;
+	}
+
+	public String getDefaultEvents() {
+		return valueOrDefault(defaultEvents, DEFAULT_EVENTS);
+	}
+
+	public Set<String> getDefaultEventsSet() {
+		return new HashSet<>(Arrays.asList(getDefaultEvents().split("\\s*,\\s*")));
+	}
+
+	public void setDefaultEvents(String defaultEvents) {
+		this.defaultEvents = defaultEvents;
 	}
 
 	private static String valueOrDefault(String value, String defaultValue) {

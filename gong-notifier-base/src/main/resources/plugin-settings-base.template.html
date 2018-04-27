@@ -22,6 +22,11 @@
     <input id="gong-rest-pwd" type="password" ng-model="restPassword"/>
     <span class="form_error" ng-show="GOINPUTNAME[restPassword].$error.server">{{ GOINPUTNAME[restPassword].$error.server }}</span>
 </div>
+<div class="form_item_block">
+    <label>Default events to notify:</label>
+    <input id="default-events" type="text" ng-model="defaultEvents" placeholder="fixed, broken, failed"/>
+    <span class="form_error" ng-show="GOINPUTNAME[defaultEvents].$error.server">{{ GOINPUTNAME[defaultEvents].$error.server }}</span>
+</div>
 <!-- Not really useful because the ajax request always includes the user's session cookie (no way not to) so can't verify authorization -->
 <!--
 <button class="check_connection submit button MB_focusable"

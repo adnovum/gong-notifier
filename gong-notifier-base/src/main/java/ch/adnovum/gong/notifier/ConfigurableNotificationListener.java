@@ -28,13 +28,15 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	private String targetEnvVariableSuffix;
 	private String eventsEnvVariableSuffix;
 	private SessionCache<String, Collection<TargetConfig>, Integer> routingConfigs;
+	private Set<String> defaultEvents;
 
 	public ConfigurableNotificationListener(PipelineInfoProvider pipelineInfo, String envVariableBase,
-			String targetEnvVariableSuffix, String eventsEnvVariableSuffix) {
+			String targetEnvVariableSuffix, String eventsEnvVariableSuffix, Set<String> defaultEvents) {
 		this.pipelineInfo = pipelineInfo;
 		this.envVariableBase = envVariableBase;
 		this.targetEnvVariableSuffix = targetEnvVariableSuffix;
 		this.eventsEnvVariableSuffix = eventsEnvVariableSuffix;
+		this.defaultEvents = defaultEvents;
 		this.routingConfigs = new SessionCache<>(5, TimeUnit.MINUTES, 1000, this::fetchPipelineTargetConfig);
 	}
 
@@ -137,7 +139,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 	}
 
 
-	private static List<RoutingRule> parseRoutingRules(String ruleStr) {
+	private List<RoutingRule> parseRoutingRules(String ruleStr) {
 		List<RoutingRule> result = new LinkedList<>();
 		String[] rules = ruleStr.toLowerCase().split("\\s*,\\s*");
 		for (String rule: rules) {
@@ -157,13 +159,13 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		return result;
 	}
 
-	private static class TargetConfig {
+	private class TargetConfig {
 		Set<String> targets;
 		List<RoutingRule> routingRules;
 
 		boolean applies(String stage, String event) {
 			if (routingRules == null || routingRules.isEmpty()) {
-				return true;
+				return matchesDefaultEvent(event);
 			}
 
 			for (RoutingRule rule: routingRules) {
@@ -175,7 +177,7 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		}
 	}
 
-	private static class RoutingRule {
+	private class RoutingRule {
 		String requiredEvent;
 		String requiredStage;
 
@@ -185,9 +187,20 @@ public abstract class ConfigurableNotificationListener implements NotificationLi
 		}
 
 		boolean applies(String stage, String event) {
-			return ("all".equals(requiredEvent) || event.equals(requiredEvent)) &&
-					("all".equals(requiredStage) || stage.equals(requiredStage));
+			return appliesToEvent(event) && appliesToStage(stage);
 		}
+
+		boolean appliesToEvent(String event) {
+			return ("all".equals(requiredEvent) && matchesDefaultEvent(event)) || event.equals(requiredEvent);
+		}
+
+		boolean appliesToStage(String stage) {
+			return "all".equals(requiredStage) || stage.equals(requiredStage);
+		}
+	}
+
+	private boolean matchesDefaultEvent(String event) {
+		return event != null && (defaultEvents == null || defaultEvents.isEmpty() || defaultEvents.contains(event));
 	}
 
 	public enum Event {
