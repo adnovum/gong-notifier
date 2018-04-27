@@ -1,5 +1,7 @@
 # gong-notifier
 
+[![CircleCI](https://circleci.com/gh/adnovum/gong-notifier.svg?style=svg)](https://circleci.com/gh/adnovum/gong-notifier)
+
 gong-notifier is a GoCD plugin collection that aims to give pipeline owners better and more direct control over who gets notified.
 
 Instead of each user specifying what they want to get notified about; or having central notification rules
