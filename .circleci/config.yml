@@ -24,27 +24,13 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: gradle dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-      
-      - run: ./gradlew assemble
+      - run: gradle assemble
 
       - store_artifacts:
           path: gong-notifier-email/build/libs
           destination: email-jars
 
-      - run: ./gradlew check
+      - run: gradle check
 
       - store_test_results:
           path: gong-notifier-email/build/test-results/test
@@ -52,8 +38,3 @@ jobs:
       - store_artifacts:
           path: build/reports/allTests
           destination: test-report
-
-      
-
-
-
