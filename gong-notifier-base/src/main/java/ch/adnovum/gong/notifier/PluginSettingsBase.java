@@ -101,7 +101,10 @@ public class PluginSettingsBase {
 		if (getRestUser() != null ? !getRestUser().equals(that.getRestUser()) : that.getRestUser() != null) {
 			return false;
 		}
-		return getRestPassword() != null ? getRestPassword().equals(that.getRestPassword()) : that.getRestPassword() == null;
+		if (getRestPassword() != null ? !getRestPassword().equals(that.getRestPassword()) : that.getRestPassword() != null) {
+			return false;
+		}
+		return getDefaultEvents() != null ? getDefaultEvents().equals(that.getDefaultEvents()) : that.getDefaultEvents() == null;
 	}
 
 	@Override
@@ -110,6 +113,7 @@ public class PluginSettingsBase {
 		result = 31 * result + (getServerDisplayUrl() != null ? getServerDisplayUrl().hashCode() : 0);
 		result = 31 * result + (getRestUser() != null ? getRestUser().hashCode() : 0);
 		result = 31 * result + (getRestPassword() != null ? getRestPassword().hashCode() : 0);
+		result = 31 * result + (getDefaultEvents() != null ? getDefaultEvents().hashCode() : 0);
 		return result;
 	}
 }
