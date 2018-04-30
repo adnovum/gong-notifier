@@ -55,7 +55,7 @@ public class GoServerApi {
 				return Optional.of(t);
 			}
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			LOGGER.error("Error fetching " + url + ":", e);
 			return Optional.empty();
 		}

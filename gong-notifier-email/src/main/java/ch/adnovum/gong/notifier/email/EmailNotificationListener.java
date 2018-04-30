@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import ch.adnovum.gong.notifier.ConfigurableNotificationListener;
 import ch.adnovum.gong.notifier.PipelineInfoProvider;
@@ -30,8 +31,9 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	private ModificationListGenerator modListGenerator;
 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender, String senderEmail,
-			String subjectTemplate, String bodyTemplate, String serverDisplayUrl, ModificationListGenerator modListGenerator) {
-		super(pipelineInfo, EMAIL_ENV_VARIABLE, TARGET_SUFFIX, EVENTS_SUFFIX);
+			String subjectTemplate, String bodyTemplate, String serverDisplayUrl, Set<String> defaultEvents,
+			ModificationListGenerator modListGenerator) {
+		super(pipelineInfo, EMAIL_ENV_VARIABLE, TARGET_SUFFIX, EVENTS_SUFFIX, defaultEvents);
 
 		this.emailSender = emailSender;
 		this.senderEmail = senderEmail;
@@ -44,7 +46,8 @@ public class EmailNotificationListener extends ConfigurableNotificationListener 
 	public EmailNotificationListener(PipelineInfoProvider pipelineInfo, EmailSender emailSender,
 			PluginSettings settings) {
 		this(pipelineInfo, emailSender, settings.getSenderEmail(), settings.getSubjectTemplate(), settings.getBodyTemplate(),
-				settings.getServerDisplayUrl(), new ModificationListGenerator(settings.getTimezone(), true));
+				settings.getServerDisplayUrl(), settings.getDefaultEventsSet(),
+				new ModificationListGenerator(settings.getTimezone(), true));
 	}
 
 	@Override
