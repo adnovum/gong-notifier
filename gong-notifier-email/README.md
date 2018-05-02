@@ -1,5 +1,25 @@
+## Introduction
 
-## Plugin Installation
+This plugin can send E-Mail notifications based on the pipeline's configuration.
+
+It can send notifications based on the following stage change events:
+
+- **building**: Stage is building
+- **cancelled**: Stage was cancelled
+- **passed**: Stage passed
+- **failed**: Stage failed
+- **broken**: Stage previously passed, but now failed
+- **fixed**: Stage previously failed, but now passed
+
+*Note: **broken** and **failed**, as well as **fixed** and **passed**, are mutually exclusive. If a pipeline transitions from **failed**
+to **passed**, only a **fixed** event is triggered, not a **passed** event. This is the same behavior as in the default
+ GoCd notification.*
+ 
+By default, the plugin will only notify for the following events: **broken, fixed, failed**.  
+See chapter **Plugin configuration** on how to change the defaults.
+
+
+## Plugin installation
 
 Just drop the plugin jar into ```plugins/external``` and restart the server as per
 [official guide](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
@@ -18,6 +38,9 @@ The property keys are listed in brackets and can be used to configure the plugin
 * **SMTP Port (smtpPort)** 
   * Port on which to connect to SMTP server 
   * **Default:** ```25```
+* **Default events to notify (defaultEvents)** 
+  * List of events for which to notify if no specific events are defined for the pipeline.
+  * **Default:** ```broken, fixed, failed```  
 * **From E-mail address (senderEmail)** 
   * E-Mail address to use as sender
   * **Default:** ```noreply@localhost.com```
@@ -77,18 +100,7 @@ Example with multiple addresses:
 GONG_EMAIL_ADDRESS = bob@example.com, alice@example.com
 ```
 
-If you specify nothing else, these e-mail addresses are notified for any of the default stage change events:
-
-- **building**: Stage is building
-- **cancelled**: Stage was cancelled
-- **passed**: Stage passed
-- **failed**: Stage failed
-- **broken**: Stage previously passed, but now failed
-- **fixed**: Stage previously failed, but now passed
-
-*Note: **broken** and **failed**, as well as **fixed** and **passed**, are mutually exclusive. If a pipeline transitions from **failed**
-to **passed**, only a **fixed** event is triggered, not a **passed** event. This is the same behavior as in the default
- GoCd notification.*
+If you specify nothing else, these e-mail addresses are notified for any of the default stage change events.
 
 ### Filtering by event
 
