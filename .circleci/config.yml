@@ -24,13 +24,13 @@ jobs:
     steps:
       - checkout
 
-      - run: gradle assemble
+      - run: ./gradlew assemble
 
       - store_artifacts:
           path: gong-notifier-email/build/libs
           destination: email-jars
 
-      - run: gradle check
+      - run: ./gradlew check
 
       - store_test_results:
           path: gong-notifier-email/build/test-results/test
