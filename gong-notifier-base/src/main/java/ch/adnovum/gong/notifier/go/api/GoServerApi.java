@@ -32,7 +32,7 @@ public class GoServerApi {
 
 	public Optional<PipelineConfig> fetchPipelineConfig(String pipelineName) {
 		String url = baseUrl + "/api/admin/pipelines/" + pipelineName;
-		return fetch(url, PipelineConfig.class, "v5", adminUser, adminPassword);
+		return fetch(url, PipelineConfig.class, "v6", adminUser, adminPassword);
 	}
 
 	public Optional<PipelineHistory> fetchPipelineHistory(String pipelineName) {
