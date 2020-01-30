@@ -32,7 +32,7 @@ public class GoServerApi {
 
 	public Optional<PipelineConfig> fetchPipelineConfig(String pipelineName) {
 		String url = baseUrl + "/api/admin/pipelines/" + pipelineName;
-		return fetch(url, PipelineConfig.class, "v6", adminUser, adminPassword);
+		return fetch(url, PipelineConfig.class, null, adminUser, adminPassword);
 	}
 
 	public Optional<PipelineHistory> fetchPipelineHistory(String pipelineName) {
@@ -45,6 +45,10 @@ public class GoServerApi {
 			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 			if (apiVer != null) {
 				conn.addRequestProperty("Accept", "application/vnd.go.cd." + apiVer + "+json");
+			}
+			else {
+				// Use latest API version (introduced in GoCD 19.8)
+				conn.addRequestProperty("Accept", "application/vnd.go.cd+json");
 			}
 			if (user != null) {
 				String auth = Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8));
