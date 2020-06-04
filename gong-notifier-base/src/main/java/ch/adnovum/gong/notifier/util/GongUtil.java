@@ -23,7 +23,7 @@ public class GongUtil {
 			while ((r = is.read(buf)) > 0) {
 				bos.write(buf, 0, r);
 			}
-			return new String(bos.toByteArray(), StandardCharsets.UTF_8);
+			return new String(bos.toByteArray(), StandardCharsets.UTF_8).replaceAll("\r", "");
 		}
 		catch (IOException e) {
 			LOGGER.error("Exception while loading resource " + resourceUrl + ": ", e);

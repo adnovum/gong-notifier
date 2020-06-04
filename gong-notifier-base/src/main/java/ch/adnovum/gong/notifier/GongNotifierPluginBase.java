@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import ch.adnovum.gong.notifier.events.BaseEvent;
 import ch.adnovum.gong.notifier.go.api.SettingsField;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import ch.adnovum.gong.notifier.util.GongUtil;
@@ -64,8 +65,6 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 	}
 
 	protected abstract void reinit();
-
-	protected abstract PipelineInfoProvider getPipelineInfoProvider();
 
 	protected void addListener(NotificationListener listener) {
 		listeners.add(listener);
@@ -152,48 +151,32 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 		}
 
 		final StageStateChange stateChange = gson.fromJson(request.requestBody(), StageStateChange.class);
-		String newState = stateChange.getState();
-		String oldState = null;
 
-		if (stateChange.getPipelineCounter() > 1) {
-			oldState = getPipelineInfoProvider().getPipelineHistory(stateChange.getPipelineName(), stateChange.getPipelineCounter())
-					.flatMap(h -> h.getPreviousStageResult(stateChange.getStageName(), stateChange.getPipelineCounter()))
-					.orElse(null);
-
-			if (oldState == null) {
-				LOGGER.warn("Could not get previous state of " + stateChange.getPipelineName() + "/" +
-						stateChange.getPipelineCounter() + "/" + stateChange.getStageName());
-			}
+		String state = stateChange.getState();
+		final BaseEvent event = mapStateToEvent(state);
+		if (event == null) {
+			LOGGER.warn("Unknown state " + state + ". Ignoring it.");
 		}
-
-		final BiConsumer<NotificationListener, StageStateChange> fn;
-		switch (newState) {
-			case STATUS_BUILDING:
-				fn = NotificationListener::handleBuilding;
-				break;
-			case STATUS_PASSED:
-				fn = STATUS_FAILED.equals(oldState)
-						? NotificationListener::handleFixed
-						: NotificationListener::handlePassed;
-				break;
-			case STATUS_FAILED:
-				fn = STATUS_PASSED.equals(oldState)
-						? NotificationListener::handleBroken
-						: NotificationListener::handleFailed;
-				break;
-			case STATUS_CANCELLED:
-				fn = NotificationListener::handleCancelled;
-				break;
-			default:
-				LOGGER.warn("Unknown state " + newState + ". Ignoring it.");
-				fn = null;
-		}
-
-		if (fn != null) {
-			listeners.forEach(l -> fn.accept(l, stateChange));
+		else {
+			listeners.forEach(l -> l.handle(event, stateChange));
 		}
 
 		return successResponse();
+	}
+
+	private BaseEvent mapStateToEvent(String state) {
+		switch (state) {
+			case STATUS_BUILDING:
+				return BaseEvent.BUILDING;
+			case STATUS_PASSED:
+				return BaseEvent.PASSED;
+			case STATUS_FAILED:
+				return BaseEvent.FAILED;
+			case STATUS_CANCELLED:
+				return BaseEvent.CANCELLED;
+			default:
+				return null;
+		}
 	}
 
 	private GoPluginApiResponse ok(Object response) {

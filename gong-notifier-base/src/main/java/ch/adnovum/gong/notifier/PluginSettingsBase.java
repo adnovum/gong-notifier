@@ -2,10 +2,11 @@ package ch.adnovum.gong.notifier;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import ch.adnovum.gong.notifier.events.HistoricalEvent;
 import ch.adnovum.gong.notifier.go.api.SettingsField;
 
 public class PluginSettingsBase {
@@ -68,8 +69,11 @@ public class PluginSettingsBase {
 		return valueOrDefault(defaultEvents, DEFAULT_EVENTS);
 	}
 
-	public Set<String> getDefaultEventsSet() {
-		return new HashSet<>(Arrays.asList(getDefaultEvents().split("\\s*,\\s*")));
+	public Set<HistoricalEvent> getDefaultEventsSet() {
+		return Arrays.stream(getDefaultEvents().split("\\s*,\\s*"))
+				.map(String::toUpperCase)
+				.map(HistoricalEvent::valueOf)
+				.collect(Collectors.toSet());
 	}
 
 	public void setDefaultEvents(String defaultEvents) {
