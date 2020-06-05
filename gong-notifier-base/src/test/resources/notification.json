@@ -1,0 +1,47 @@
+{
+  "pipeline": {
+    "name": "pipeline1",
+    "counter": "6",
+    "group": "defaultGroup",
+    "build-cause": [
+      {
+        "material": {
+          "git-configuration": {
+            "shallow-clone": false,
+            "branch": "master",
+            "url": "https://github.com/adnovum/gong-notifier.git"
+          },
+          "type": "git"
+        },
+        "changed": false,
+        "modifications": [
+          {
+            "revision": "3717d80f273d5d1626eeba3dacb589d71ba4d29d",
+            "modified-time": "2020-01-30T11:15:53.000Z",
+            "data": {}
+          }
+        ]
+      }
+    ],
+    "stage": {
+      "name": "stage1",
+      "counter": "1",
+      "approval-type": "success",
+      "approved-by": "anonymous",
+      "state": "Passed",
+      "result": "Passed",
+      "create-time": "2020-06-05T22:00:56.692Z",
+      "last-transition-time": "2020-06-05T22:01:23.615Z",
+      "jobs": [
+        {
+          "name": "job1",
+          "schedule-time": "2020-06-05T22:00:56.692Z",
+          "complete-time": "2020-06-05T22:01:23.615Z",
+          "state": "Completed",
+          "result": "Passed",
+          "agent-uuid": "7b3c267d-3143-41fb-af4f-5cf8da984309"
+        }
+      ]
+    }
+  }
+}

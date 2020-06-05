@@ -16,6 +16,7 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 
 	private static final String STATUS_ACCESS_TOKEN = "GONG_STATUS_ACCESS_TOKEN";
 
+
 	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusNotificationListener.class);
 
 	private final ConfigService cfgService;
@@ -44,18 +45,37 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 			return;
 		}
 
-		EnvironmentVariable accessTokenVar = fetchAccessTokenVariable(stateChange);
-		if (accessTokenVar == null) {
-			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_ACCESS_TOKEN +
-					" set. Skipping");
+		String prMaterialUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
+		if (prMaterialUrl == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have a PR material URL. Skipping.");
 			return;
 		}
 
-		try {
-			LOGGER.info(stateChange.getPipelineName() + " changed to " + event + ". Access token: " + getDecryptedValue(accessTokenVar));
-		} catch (SecretDecryptException e) {
-			LOGGER.error("Could not decrypt " + STATUS_ACCESS_TOKEN + " for pipeline " + stateChange.getPipelineName());
+		String repo = GithubPRStatusHelper.getRepoFromUrl(prMaterialUrl);
+		if (repo == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + ": Cannot extract valid Github repo from " +
+					"PR material URL " + prMaterialUrl + ". Skipping.");
+			return;
 		}
+
+		EnvironmentVariable accessTokenVar = fetchAccessTokenVariable(stateChange);
+		if (accessTokenVar == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_ACCESS_TOKEN +
+					" set. Skipping.");
+			return;
+		}
+
+		String accessToken;
+		try {
+			accessToken = getDecryptedValue(accessTokenVar);
+		} catch (SecretDecryptException ex) {
+			LOGGER.error("Could not decrypt " + STATUS_ACCESS_TOKEN + " for pipeline " + stateChange.getPipelineName());
+			return;
+		}
+
+		LOGGER.info(stateChange.getPipelineName() + " changed to " + event +
+				". Access token: " + accessToken +
+				". Github repo: " + repo);
 	}
 
 	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange) {
