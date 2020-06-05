@@ -1,4 +1,5 @@
 rootProject.name = 'gong-notifier'
 
 include 'gong-notifier-base',
-        'gong-notifier-email'
+        'gong-notifier-email',
+        'gong-notifier-github-pr-status'

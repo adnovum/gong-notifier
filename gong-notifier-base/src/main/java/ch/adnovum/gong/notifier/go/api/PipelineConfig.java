@@ -21,6 +21,13 @@ public class PipelineConfig {
 				.findFirst();
 	}
 
+	public Optional<EnvironmentVariable> getEnvironmentVariable(String varName) {
+		return environmentVariables
+				.stream()
+				.filter(v -> v.name.equals(varName))
+				.findFirst();
+	}
+
 	public void addEnvironmentVariable(String name, String value) {
 		EnvironmentVariable v = new EnvironmentVariable();
 		v.name = name;
@@ -30,6 +37,9 @@ public class PipelineConfig {
 
 	public static class EnvironmentVariable {
 		public String name;
+		public boolean secure;
 		public String value;
+		@SerializedName("encrypted_value")
+		public String encryptedValue;
 	}
 }
