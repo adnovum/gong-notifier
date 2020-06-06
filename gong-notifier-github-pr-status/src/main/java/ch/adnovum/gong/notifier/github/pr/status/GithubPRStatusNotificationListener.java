@@ -45,16 +45,20 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 			return;
 		}
 
-		String prMaterialUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		if (prMaterialUrl == null) {
-			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have a PR material URL. Skipping.");
+		GithubPRStatusHelper.GithubPRInfo prInfo = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		if (prInfo == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have a Github PR material. Skipping.");
+			return;
+		}
+		if (prInfo.getRevision() == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have a Github PR revision. Skipping.");
 			return;
 		}
 
-		String repo = GithubPRStatusHelper.getRepoFromUrl(prMaterialUrl);
+		String repo = GithubPRStatusHelper.getRepoFromUrl(prInfo.getUrl());
 		if (repo == null) {
 			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + ": Cannot extract valid Github repo from " +
-					"PR material URL " + prMaterialUrl + ". Skipping.");
+					"PR material URL " + prInfo.getUrl() + ". Skipping.");
 			return;
 		}
 
@@ -75,7 +79,8 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 
 		LOGGER.info(stateChange.getPipelineName() + " changed to " + event +
 				". Access token: " + accessToken +
-				". Github repo: " + repo);
+				". Github repo: " + repo +
+				". Revision: " + prInfo.getRevision());
 	}
 
 	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange) {

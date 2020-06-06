@@ -56,6 +56,7 @@ public class StageStateChange {
 
 	public static class BuildCause {
 		public Material material;
+		public List<Modification> modifications;
 	}
 
 	public static class Material {
@@ -71,5 +72,9 @@ public class StageStateChange {
 
 	public static class MaterialConfig {
 		public String url;
+	}
+
+	public static class Modification {
+		public String revision;
 	}
 }

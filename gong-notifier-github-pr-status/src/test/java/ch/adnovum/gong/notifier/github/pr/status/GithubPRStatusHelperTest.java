@@ -7,26 +7,42 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_SCM_PLUGIN_ID;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class GithubPRStatusHelperTest {
 
 	@Test
-	public void shoudGetGithubPRMaterialUrl() {
+	public void shoudGetGithubPRInfo() {
+		final String url = "https://github.com/adnovum/gong-notifier.git";
+		final String revision = "12345";
+		StageStateChange stateChange = createStageChangeWithMaterials(
+				createMaterial(EXPECTED_MATERIAL_TYPE, EXPECTED_SCM_PLUGIN_ID, url)
+		);
+		StageStateChange.Modification mod = new StageStateChange.Modification();
+		mod.revision = revision;
+		stateChange.pipeline.buildCause.get(0).modifications = Collections.singletonList(mod);
+
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertEquals(url, info.getUrl());
+		assertEquals(revision, info.getRevision());
+	}
+
+	@Test
+	public void shoudGetGithubPRInfo_WithoutRevision() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
 		StageStateChange stateChange = createStageChangeWithMaterials(
 				createMaterial(EXPECTED_MATERIAL_TYPE, EXPECTED_SCM_PLUGIN_ID, url)
 		);
 
-		String foundUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		assertEquals(url, foundUrl);
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertEquals(url, info.getUrl());
+		assertNull(info.getRevision());
 	}
 
 	@Test
-	public void shoudGetGithubPRMaterialUrl_ManyBuildCauses() {
+	public void shoudGetGithubPRInfo_ManyBuildCauses() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
 		StageStateChange stateChange = createStageChangeWithMaterials(
 				createMaterial(EXPECTED_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
@@ -36,37 +52,37 @@ public class GithubPRStatusHelperTest {
 
 		);
 
-		String foundUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		assertEquals(url, foundUrl);
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertEquals(url, info.getUrl());
 	}
 
 	@Test
-	public void shoudGetGithubPRMaterialUrl_NoMatchingBuildCause() {
+	public void shoudGetGithubPRInfo_NoMatchingBuildCause() {
 		StageStateChange stateChange = createStageChangeWithMaterials(
 				createMaterial(EXPECTED_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
 				createMaterial("different-type", EXPECTED_SCM_PLUGIN_ID, "different/mat/type"),
 				createMaterial(EXPECTED_MATERIAL_TYPE, EXPECTED_SCM_PLUGIN_ID, "not/a/gh/url")
 		);
 
-		String foundUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		assertNull(foundUrl);
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertNull(info);
 	}
 
 	@Test
-	public void shoudGetGithubPRMaterialUrl_NoBuildCauses() {
+	public void shoudGetGithubPRInfo_NoBuildCauses() {
 		StageStateChange stateChange = createStageChangeWithMaterials();
 
-		String foundUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		assertNull(foundUrl);
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertNull(info);
 	}
 
 	@Test
-	public void shoudGetGithubPRMaterialUrl_BuildCauseWithoutMaterial() {
+	public void shoudgetGithubPRInfo_BuildCauseWithoutMaterial() {
 		StageStateChange stateChange = createStageChangeWithMaterials();
 		stateChange.pipeline.buildCause = Collections.singletonList(new StageStateChange.BuildCause());
 
-		String foundUrl = GithubPRStatusHelper.getGithubPRMaterialUrl(stateChange);
-		assertNull(foundUrl);
+		GithubPRInfo info = GithubPRStatusHelper.getGithubPRInfo(stateChange);
+		assertNull(info);
 	}
 
 	@Test
