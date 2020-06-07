@@ -30,6 +30,10 @@ jobs:
           path: gong-notifier-email/build/libs
           destination: email-jars
 
+      - store_artifacts:
+          path: gong-notifier-github-pr-status/build/libs
+          destination: github-pr-status-jars
+
       - run: ./gradlew check
 
       - store_test_results:

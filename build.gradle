@@ -23,3 +23,7 @@ task testReport(type: TestReport) {
 task test {
     finalizedBy testReport
 }
+
+task check {
+    finalizedBy testReport
+}
