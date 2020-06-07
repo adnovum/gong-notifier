@@ -1,13 +1,13 @@
 <div class="form_item_block">
     <label>Server Display URL:
-        <br/><i>For links in notifications</i>
+    <br/><i>For links in notifications</i>
     </label>
     <input type="text" ng-model="serverDisplayUrl" placeholder="http://gocd.mycompany.com/go"/>
     <span class="form_error" ng-show="GOINPUTNAME[serverDisplayUrl].$error.server">{{ GOINPUTNAME[serverDisplayUrl].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label>REST URL:
-        <br/><i>For REST calls</i>
+    <br/><i>For REST calls</i>
     </label>
     <input type="text" ng-model="serverUrl" placeholder="http://localhost:8153/go"/>
     <span class="form_error" ng-show="GOINPUTNAME[serverUrl].$error.server">{{ GOINPUTNAME[serverUrl].$error.server }}</span>
@@ -21,11 +21,6 @@
     <label>REST user password:</label>
     <input id="gong-rest-pwd" type="password" ng-model="restPassword"/>
     <span class="form_error" ng-show="GOINPUTNAME[restPassword].$error.server">{{ GOINPUTNAME[restPassword].$error.server }}</span>
-</div>
-<div class="form_item_block">
-    <label>Default events to notify:</label>
-    <input id="default-events" type="text" ng-model="defaultEvents" placeholder="fixed, broken, failed"/>
-    <span class="form_error" ng-show="GOINPUTNAME[defaultEvents].$error.server">{{ GOINPUTNAME[defaultEvents].$error.server }}</span>
 </div>
 <!-- Not really useful because the ajax request always includes the user's session cookie (no way not to) so can't verify authorization -->
 <!--
