@@ -1,4 +1,4 @@
-## Introduction
+## Gong Notifier E-Mail
 
 This plugin can send E-Mail notifications based on the pipeline's configuration.
 
@@ -24,7 +24,7 @@ See chapter **Plugin configuration** on how to change the defaults.
 Just drop the plugin jar into ```plugins/external``` and restart the server as per
 [official guide](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
 
-## Plugin configuration
+### Plugin configuration
 
 There are a number of global configuration settings for the plugin that can be set in the GoCD server plugins view.
 
@@ -84,7 +84,7 @@ Templating is limited to replacing simple variables with their values. The follo
 - {serverUrl} - The base server url as specified in the Server Display Url setting
 - {modificationList} - The list of modifications that caused the build
 
-## Pipeline notification configuration
+### User guide for pipeline owners
 
 Each pipeline can specify whom to e-mail when an event occurs.
 The notification settings are done via pipeline environment variables.

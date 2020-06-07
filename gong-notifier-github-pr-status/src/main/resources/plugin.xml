@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <go-plugin id="${rootProject.group}.github.pr.status" version="1">
     <about>
-        <name>Gong Notifier Github PR Status</name>
+        <name>Gong Notifier GitHub PR Status</name>
         <version>$version</version>
         <target-go-version>$goVersion</target-go-version>
-        <description>Plugin to update a pull-request build status in Github.</description>
+        <description>Plugin to update a pull-request build status in GitHub.</description>
         <vendor>
             <name>AdNovum Informatik AG</name>
             <url></url>
