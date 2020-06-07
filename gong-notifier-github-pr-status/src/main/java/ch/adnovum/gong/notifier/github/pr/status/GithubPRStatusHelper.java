@@ -1,7 +1,6 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
-import ch.adnovum.gong.notifier.util.GongUtil;
 import com.google.common.base.Strings;
 
 import java.util.Objects;
@@ -9,11 +8,8 @@ import java.util.Optional;
 
 public class GithubPRStatusHelper {
 
-	// FIXME
-	static final String EXPECTED_MATERIAL_TYPE = "git";
-	// FIXME
-	static final String EXPECTED_SCM_PLUGIN_ID = null;
-
+	static final String EXPECTED_MATERIAL_TYPE = "scm";
+	static final String EXPECTED_SCM_PLUGIN_ID = "github.pr";
 	private static final String EXPECTED_GITHUB_PAGE = "github.com";
 
 	public static class GithubPRInfo {
@@ -38,16 +34,18 @@ public class GithubPRStatusHelper {
 	private static Optional<StageStateChange.BuildCause> findGithubPRBuildCause(StageStateChange stateChange) {
 		return stateChange.pipeline.buildCause.stream()
 				.filter(c -> c.material != null)
-				.filter(c -> EXPECTED_MATERIAL_TYPE.equals(c.material.type))
+				.filter(c -> Objects.equals(EXPECTED_MATERIAL_TYPE, c.material.type))
 				.filter(c -> Objects.equals(EXPECTED_SCM_PLUGIN_ID, c.material.pluginId))
-				.filter(c -> c.material.configuration.url != null && c.material.configuration.url.contains(EXPECTED_GITHUB_PAGE))
+				.filter(c -> c.material.configuration.url != null &&
+						c.material.configuration.url.contains(EXPECTED_GITHUB_PAGE))
 				.findFirst();
 	}
 
 	private static GithubPRInfo toPRInfo(StageStateChange.BuildCause cause) {
 		GithubPRInfo info = new GithubPRInfo();
 		info.url = cause.material.configuration.url;
-		info.revision = cause.modifications == null || cause.modifications.isEmpty() ? null : cause.modifications.get(0).revision;
+		info.revision = cause.modifications == null || cause.modifications.isEmpty() ? null :
+				cause.modifications.get(0).revision;
 		return info;
 	}
 

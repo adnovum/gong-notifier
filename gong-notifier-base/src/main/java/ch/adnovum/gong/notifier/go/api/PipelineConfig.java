@@ -35,6 +35,14 @@ public class PipelineConfig {
 		environmentVariables.add(v);
 	}
 
+	public void addSecureVariable(String name, String encryptedValue) {
+		EnvironmentVariable v = new EnvironmentVariable();
+		v.secure = true;
+		v.name = name;
+		v.encryptedValue = encryptedValue;
+		environmentVariables.add(v);
+	}
+
 	public static class EnvironmentVariable {
 		public String name;
 		public boolean secure;

@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.*;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterials;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -107,25 +109,5 @@ public class GithubPRStatusHelperTest {
 			String output = params[i + 1];
 			assertEquals("Input " + input, output, GithubPRStatusHelper.getRepoFromUrl(input));
 		}
-	}
-
-	private StageStateChange createStageChangeWithMaterials(StageStateChange.Material... mats) {
-		StageStateChange stateChange = new StageStateChange();
-		stateChange.pipeline = new StageStateChange.Pipeline();
-		stateChange.pipeline.buildCause = Arrays.stream(mats).map(mat -> {
-			StageStateChange.BuildCause bc = new StageStateChange.BuildCause();
-			bc.material = mat;
-			return bc;
-		}).collect(Collectors.toList());
-		return stateChange;
-	}
-
-	private StageStateChange.Material createMaterial(String type, String pluginId, String url) {
-		StageStateChange.Material mat = new StageStateChange.Material();
-		mat.type = type;
-		mat.pluginId = pluginId;
-		mat.configuration = new StageStateChange.MaterialConfig();
-		mat.configuration.url = url;
-		return mat;
 	}
 }

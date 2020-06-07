@@ -2,7 +2,6 @@ package ch.adnovum.gong.notifier.github.pr.status;
 
 import ch.adnovum.gong.notifier.NotificationListener;
 import ch.adnovum.gong.notifier.events.BaseEvent;
-import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig.EnvironmentVariable;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import ch.adnovum.gong.notifier.services.ConfigService;
@@ -10,41 +9,28 @@ import ch.adnovum.gong.notifier.services.SecretDecryptService;
 import ch.adnovum.gong.notifier.util.SecretDecryptException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
-import java.io.File;
-
 public class GithubPRStatusNotificationListener implements NotificationListener {
 
-	private static final String STATUS_ACCESS_TOKEN = "GONG_STATUS_ACCESS_TOKEN";
+	static final String STATUS_AUTH_TOKEN = "GONG_STATUS_AUTH_TOKEN";
 
 
 	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusNotificationListener.class);
 
 	private final ConfigService cfgService;
 	private final SecretDecryptService decryptService;
+	private final GithubClient githubClient;
+	private final String serverDisplayUrl;
 
-	public GithubPRStatusNotificationListener(ConfigService cfgService, SecretDecryptService decryptService) {
+	public GithubPRStatusNotificationListener(ConfigService cfgService, SecretDecryptService decryptService,
+											  GithubClient githubClient, String serverDisplayUrl) {
 		this.cfgService = cfgService;
 		this.decryptService = decryptService;
-	}
-
-	public static void main(String[] args) {
-		GoServerApi api = new GoServerApi("http://192.168.99.100:8153/go");
-		ConfigService srv = new ConfigService(api);
-		SecretDecryptService decSrv = new SecretDecryptService(new File("D:\\Projects\\java\\gong-notifier\\cipher.aes"));
-		GithubPRStatusNotificationListener lst = new GithubPRStatusNotificationListener(srv, decSrv);
-
-		StageStateChange dummyChange =  new StageStateChange("pipeline1",10,
-				"stage1","passed");
-		lst.handle(BaseEvent.PASSED, dummyChange);
+		this.githubClient = githubClient;
+		this.serverDisplayUrl = serverDisplayUrl;
 	}
 
 	@Override
 	public void handle(BaseEvent event, StageStateChange stateChange) {
-		if (event != BaseEvent.PASSED && event != BaseEvent.FAILED) {
-			// Ignore other events.
-			return;
-		}
-
 		GithubPRStatusHelper.GithubPRInfo prInfo = GithubPRStatusHelper.getGithubPRInfo(stateChange);
 		if (prInfo == null) {
 			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have a Github PR material. Skipping.");
@@ -62,34 +48,46 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 			return;
 		}
 
-		EnvironmentVariable accessTokenVar = fetchAccessTokenVariable(stateChange);
-		if (accessTokenVar == null) {
-			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_ACCESS_TOKEN +
+		EnvironmentVariable authTokenVar = fetchAccessTokenVariable(stateChange);
+		if (authTokenVar == null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_AUTH_TOKEN +
 					" set. Skipping.");
 			return;
 		}
 
-		String accessToken;
+		String authToken;
 		try {
-			accessToken = getDecryptedValue(accessTokenVar);
+			authToken = decryptValue(authTokenVar);
 		} catch (SecretDecryptException ex) {
-			LOGGER.error("Could not decrypt " + STATUS_ACCESS_TOKEN + " for pipeline " + stateChange.getPipelineName());
+			LOGGER.error("Could not decrypt " + STATUS_AUTH_TOKEN + " for pipeline " + stateChange.getPipelineName());
 			return;
 		}
 
-		LOGGER.info(stateChange.getPipelineName() + " changed to " + event +
-				". Access token: " + accessToken +
+		String context = String.format("GoCD/%s/%s", stateChange.getPipelineName(), stateChange.getStageName());
+		String urlToPipeline = String.format("%s/pipelines/%s/%d/%s/%d",
+				serverDisplayUrl, stateChange.getPipelineName(), stateChange.getPipelineCounter(),
+				stateChange.getStageName(), stateChange.getStageCounter());
+
+		LOGGER.debug(stateChange.getPipelineName() + " changed to " + event +
+				". Auth token: " + authToken.substring(0,2) + "..." + authToken.substring(authToken.length() - 2) +
 				". Github repo: " + repo +
-				". Revision: " + prInfo.getRevision());
+				". Revision: " + prInfo.getRevision() +
+				". Url to pipeline: " + urlToPipeline);
+
+		try {
+			githubClient.updateCommitStatus(repo, prInfo.getRevision(), event, context,	urlToPipeline, authToken);
+		} catch (GithubClient.GithubException e) {
+			LOGGER.error("Could not update Github commit status", e);
+		}
 	}
 
 	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange) {
 		return cfgService.fetchPipelineConfig(stateChange.getPipelineName(), stateChange.getPipelineCounter())
-				.flatMap(c -> c.getEnvironmentVariable(STATUS_ACCESS_TOKEN))
+				.flatMap(c -> c.getEnvironmentVariable(STATUS_AUTH_TOKEN))
 				.orElse(null);
 	}
 
-	private String getDecryptedValue(EnvironmentVariable var) throws SecretDecryptException {
+	private String decryptValue(EnvironmentVariable var) throws SecretDecryptException {
 		return var.secure ? decryptService.decrypt(var.encryptedValue) : var.value;
 	}
 }

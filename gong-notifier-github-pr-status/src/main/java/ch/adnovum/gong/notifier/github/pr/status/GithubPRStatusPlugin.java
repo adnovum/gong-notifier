@@ -37,7 +37,8 @@ public class GithubPRStatusPlugin extends GongNotifierPluginBase {
 						.setAdminCredentials(settings.getRestUser(), settings.getRestPassword());
 		ConfigService srv = new ConfigService(api);
 		SecretDecryptService decSrv = new SecretDecryptService(new File(settings.getCipherKeyFile()));
+		GithubClient ghClient = new GithubClient();
 
-		addListener(new GithubPRStatusNotificationListener(srv, decSrv));
+		addListener(new GithubPRStatusNotificationListener(srv, decSrv, ghClient, settings.getServerDisplayUrl()));
 	}
 }

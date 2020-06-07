@@ -2,6 +2,7 @@ version = githubPrStatusVersion
 
 dependencies {
     compile project(':gong-notifier-base')
+    compile group: 'org.kohsuke', name: 'github-api', version: '1.112'
 
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
