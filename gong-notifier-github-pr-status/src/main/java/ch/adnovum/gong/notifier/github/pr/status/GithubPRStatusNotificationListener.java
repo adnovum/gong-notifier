@@ -11,8 +11,6 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class GithubPRStatusNotificationListener implements NotificationListener {
 
-	static final String STATUS_AUTH_TOKEN = "GONG_STATUS_AUTH_TOKEN";
-
 
 	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusNotificationListener.class);
 
@@ -50,7 +48,7 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 
 		EnvironmentVariable authTokenVar = fetchAccessTokenVariable(stateChange);
 		if (authTokenVar == null) {
-			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_AUTH_TOKEN +
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + GithubPRStatusHelper.STATUS_AUTH_TOKEN +
 					" set. Skipping.");
 			return;
 		}
@@ -59,7 +57,8 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 		try {
 			authToken = decryptValue(authTokenVar);
 		} catch (SecretDecryptException ex) {
-			LOGGER.error("Could not decrypt " + STATUS_AUTH_TOKEN + " for pipeline " + stateChange.getPipelineName());
+			LOGGER.error("Could not decrypt " + GithubPRStatusHelper.STATUS_AUTH_TOKEN + " for pipeline " +
+					stateChange.getPipelineName());
 			return;
 		}
 
@@ -82,9 +81,7 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 	}
 
 	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange) {
-		return cfgService.fetchPipelineConfig(stateChange.getPipelineName(), stateChange.getPipelineCounter())
-				.flatMap(c -> c.getEnvironmentVariable(STATUS_AUTH_TOKEN))
-				.orElse(null);
+		return GithubPRStatusHelper.fetchAccessTokenVariable(stateChange, cfgService).orElse(null);
 	}
 
 	private String decryptValue(EnvironmentVariable var) throws SecretDecryptException {

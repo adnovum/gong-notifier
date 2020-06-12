@@ -1,10 +1,12 @@
 package ch.adnovum.gong.notifier.go.api;
 
-import com.google.gson.annotations.SerializedName;
-
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import com.google.gson.annotations.SerializedName;
 
 public class PipelineConfig {
 
@@ -12,6 +14,9 @@ public class PipelineConfig {
 
 	@SerializedName("environment_variables")
 	public List<EnvironmentVariable> environmentVariables = new LinkedList<>();
+
+	public List<Material> materials = new LinkedList<>();
+
 
 	public Optional<String> getEnvironmentVariableValue(String varName) {
 		return environmentVariables
@@ -49,5 +54,10 @@ public class PipelineConfig {
 		public String value;
 		@SerializedName("encrypted_value")
 		public String encryptedValue;
+	}
+
+	public static class Material {
+		public String type;
+		public Map<String, String> attributes = new HashMap<>();
 	}
 }

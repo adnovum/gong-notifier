@@ -43,9 +43,45 @@ variables. They do not need to be set if your server does not have any authoriza
 
 ## User guide for pipeline owners
 
-Each pipeline that wants to enable status updates on GitHub pull-requests must configure
-a secret variable `GONG_STATUS_AUTH_TOKEN`. The variable must be defined on the pipeline, not on a stage or job.  
-The variable value is a GitHub personal access token with at least the scope `repo:status`.
-See the [personal access tokens](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) documentation on GitHub.
+### Pipeline requirements 
 
-![Sample configuration](pipeline_config.png)
+Only pipelines matching the following criteria can make use of the PR status update:
+- Pipeline uses a pull-request material of type "github.pr" (provided by [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests))
+- The pull-request material points to a repository on github.com
+- An access token for Github is configured for the pipeline (see below).
+
+### Github access token
+
+The pipeline must have a Github access token for the plugin to make the status updates.
+The access token must have at least `repo:status` permissions.
+
+There are two ways to configure the access token:
+1. As a secret variable `GONG_STATUS_AUTH_TOKEN`. The variable must be defined on the pipeline, not on a stage or job.
+See also the [personal access tokens](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
+documentation on GitHub.  
+Example: ![Sample configuration](pipeline_config.png)
+2. As a configuration setting `password` on the pull-request material itself. This means the plugin will
+use the same token that was used to check out the repository.  
+Example: 
+```xml
+<scm id="my.pr" name="my.pr">
+  <pluginConfiguration id="github.pr" version="1" />
+  <configuration>
+	<property>
+	  <key>url</key>
+	  <value>https://github.com/company/my-repo.git</value>
+	</property>
+	<property>
+	  <key>username</key>
+	  <value>myuser</value>
+	</property>
+	<property>
+	  <key>password</key>
+	  <encryptedValue>AES:123456</encryptedValue>
+	</property>
+  </configuration>
+</scm>
+```
+
+Note that the `GONG_STATUS_AUTH_TOKEN` pipeline variable takes precedence.
+

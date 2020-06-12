@@ -1,12 +1,21 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
-import ch.adnovum.gong.notifier.go.api.StageStateChange;
-import com.google.common.base.Strings;
-
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.adnovum.gong.notifier.go.api.PipelineConfig;
+import ch.adnovum.gong.notifier.go.api.PipelineConfig.EnvironmentVariable;
+import ch.adnovum.gong.notifier.go.api.ScmConfig;
+import ch.adnovum.gong.notifier.go.api.StageStateChange;
+import ch.adnovum.gong.notifier.services.ConfigService;
+import com.google.common.base.Strings;
+import com.thoughtworks.go.plugin.api.logging.Logger;
+
 public class GithubPRStatusHelper {
+
+	static final String STATUS_AUTH_TOKEN = "GONG_STATUS_AUTH_TOKEN";
+
+	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusHelper.class);
 
 	static final String EXPECTED_MATERIAL_TYPE = "scm";
 	static final String EXPECTED_SCM_PLUGIN_ID = "github.pr";
@@ -74,5 +83,50 @@ public class GithubPRStatusHelper {
 		}
 
 		return user + "/" + repo;
+	}
+
+	public static Optional<EnvironmentVariable> fetchAccessTokenVariable(StageStateChange stateChange, ConfigService cfgService) {
+		PipelineConfig cfg = cfgService.fetchPipelineConfig(stateChange.getPipelineName(), stateChange.getPipelineCounter())
+				.orElse(null);
+		if (cfg == null) {
+			return Optional.empty();
+		}
+
+		EnvironmentVariable envVar = cfg.getEnvironmentVariable(STATUS_AUTH_TOKEN).orElse(null);
+		if (envVar != null) {
+			LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " has " + STATUS_AUTH_TOKEN + " variable configured."
+					+ "Using that.");
+			return Optional.of(envVar);
+		}
+
+		// Fallback to the auth token used for the PR material.
+		// This is best effort: we only check the first matching material in the pipeline,
+		// otherwise we'd have to N+1 load all materials from the API. This is sadly necessary
+		// because the notification doesn't mention the material ID, so we have to guess based on all
+		// the configured materials.
+		LOGGER.debug("Pipeline " + stateChange.getPipelineName() + " does not have " + STATUS_AUTH_TOKEN + " variable configured."
+				+ "Trying to fallback to token configured on the PR material.");
+
+		Optional<String> prMatName = cfg.materials.stream()
+				.filter(m -> "plugin".equals(m.type))
+				.filter(m -> m.attributes.containsKey("ref"))
+				.map(m -> m.attributes.get("ref"))
+				.findFirst();
+
+		Optional<ScmConfig> prMatCfg = prMatName
+				.flatMap(cfgService::fetchScmConfig);
+
+		return prMatCfg
+				.flatMap(c -> c.getConfigurationEntry("password"))
+				.map(GithubPRStatusHelper::toEnvVar);
+	}
+
+	private static EnvironmentVariable toEnvVar(ScmConfig.ConfigEntry scmCfgEntry) {
+		EnvironmentVariable var = new EnvironmentVariable();
+		var.name = scmCfgEntry.key;
+		var.secure = scmCfgEntry.encryptedValue != null;
+		var.value = scmCfgEntry.value;
+		var.encryptedValue = scmCfgEntry.encryptedValue;
+		return var;
 	}
 }

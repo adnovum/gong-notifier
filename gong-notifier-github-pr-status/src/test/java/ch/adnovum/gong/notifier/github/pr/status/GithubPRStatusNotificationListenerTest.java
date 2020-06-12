@@ -1,5 +1,19 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_MATERIAL_TYPE;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_SCM_PLUGIN_ID;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision;
+import static java.util.Collections.emptyList;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import ch.adnovum.gong.notifier.events.BaseEvent;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
@@ -10,22 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.nio.channels.Pipe;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Optional;
-
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_SCM_PLUGIN_ID;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GithubPRStatusNotificationListenerTest {
@@ -66,7 +65,7 @@ public class GithubPRStatusNotificationListenerTest {
 				createMaterial(EXPECTED_MATERIAL_TYPE, EXPECTED_SCM_PLUGIN_ID, "https://github.com/adnovum/gong-notifier.git"));
 
 		pipelineConfig = new PipelineConfig();
-		pipelineConfig.addSecureVariable(GithubPRStatusNotificationListener.STATUS_AUTH_TOKEN, encryptedAuthToken);
+		pipelineConfig.addSecureVariable(GithubPRStatusHelper.STATUS_AUTH_TOKEN, encryptedAuthToken);
 		when(cfgService.fetchPipelineConfig(pipeline, pipelineCounter)).thenReturn(Optional.of(pipelineConfig));
 		when(decryptService.decrypt(encryptedAuthToken)).thenReturn(authToken);
 	}

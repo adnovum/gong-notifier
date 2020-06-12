@@ -40,6 +40,11 @@ public class GoServerApi {
 		return fetch(url, PipelineHistory.class, null, adminUser, adminPassword);
 	}
 
+	public Optional<ScmConfig> fetchScmConfig(String scmName) {
+		String url = baseUrl + "/api/admin/scms/" + scmName;
+		return fetch(url, ScmConfig.class, null, adminUser, adminPassword);
+	}
+
 	private static <T> Optional<T> fetch(String url, Class<T> clazz, String apiVer, String user, String password) {
 		try {
 			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
