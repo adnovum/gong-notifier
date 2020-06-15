@@ -1,5 +1,3 @@
-version = emailVersion
-
 dependencies {
     compile project(':gong-notifier-base')
     compile 'com.sun.mail:javax.mail:1.5.6'

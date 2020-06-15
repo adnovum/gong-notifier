@@ -3,16 +3,23 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - hold-for-release:
+          type: approval
+          requires:
+            - build
+      - release:
+          requires:
+            - hold-for-release
+
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
@@ -42,3 +49,29 @@ jobs:
       - store_artifacts:
           path: build/reports/allTests
           destination: test-report
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - gong-notifier-email/build/libs/*.jar
+            - gong-notifier-github-pr-status/build/libs/*.jar
+            - build/version.txt
+
+  release:
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: Flatten artifacts hierarchy
+          command: |
+            mkdir flat
+            find artifacts -type f -exec cp {} flat/ \;
+      - run:
+          name: Publish Release on GitHub
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=$(cat ./flat/version.txt)
+            rm -f ./flat/version.txt
+            ghr -t ${GITHUB_RELEASE_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -b "Version ${VERSION}" ${VERSION} ./flat/

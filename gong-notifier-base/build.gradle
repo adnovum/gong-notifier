@@ -1,5 +1,3 @@
-version = baseVersion
-
 dependencies {
     compile "cd.go.plugin:go-plugin-api:$goVersion"
     compile 'com.google.code.gson:gson:2.8.2'
