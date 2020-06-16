@@ -7,7 +7,8 @@ workflows:
   version: 2
   all:
     jobs:
-      - build
+      - build:
+          context: SonarCloud
       - hold-for-release:
           type: approval
           requires:
@@ -49,6 +50,10 @@ jobs:
       - store_artifacts:
           path: build/reports/allTests
           destination: test-report
+
+      - run:
+          name: Analyze on SonarCloud
+          command: ./gradlew sonarqube
 
       - persist_to_workspace:
           root: .
