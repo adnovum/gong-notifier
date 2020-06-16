@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("java:S1104")
 public class PipelineConfig {
 
 	public String name;

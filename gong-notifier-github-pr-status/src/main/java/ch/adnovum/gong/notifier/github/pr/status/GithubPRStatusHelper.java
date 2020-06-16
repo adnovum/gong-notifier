@@ -15,11 +15,15 @@ public class GithubPRStatusHelper {
 
 	static final String STATUS_AUTH_TOKEN = "GONG_STATUS_AUTH_TOKEN";
 
-	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusHelper.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GithubPRStatusHelper.class);
 
 	static final String EXPECTED_MATERIAL_TYPE = "scm";
 	static final String EXPECTED_SCM_PLUGIN_ID = "github.pr";
 	private static final String EXPECTED_GITHUB_PAGE = "github.com";
+
+	private GithubPRStatusHelper() {
+		// Static utility class.
+	}
 
 	public static class GithubPRInfo {
 		private String url;

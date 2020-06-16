@@ -11,6 +11,9 @@ public class SecretDecryptHelper {
 	private static final Base64.Decoder B64_DECODER = Base64.getDecoder();
 	private static final String CIPHER_ALGO = "AES/CBC/PKCS5Padding";
 
+	private SecretDecryptHelper() {
+		// Static utility class.
+	}
 
 	public static String decrypt(String secret, byte[] key) throws SecretDecryptException {
 		try {
@@ -24,7 +27,7 @@ public class SecretDecryptHelper {
 
 			SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
 			IvParameterSpec ivSpec = new IvParameterSpec(iv);
-			Cipher decryptCipher = Cipher.getInstance(CIPHER_ALGO);
+			Cipher decryptCipher = Cipher.getInstance(CIPHER_ALGO); // NOSONAR java:S5542: we need to use the scheme that GoCD uses.
 			decryptCipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
 
 			byte[] plainBytes = decryptCipher.doFinal(cipher);

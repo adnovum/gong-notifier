@@ -1,5 +1,7 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
+import java.io.File;
+
 import ch.adnovum.gong.notifier.GongNotifierPluginBase;
 import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.services.ConfigService;
@@ -9,16 +11,13 @@ import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
-import java.io.File;
-
 @Extension
 public class GithubPRStatusPlugin extends GongNotifierPluginBase {
 
-	private static Logger LOGGER = Logger.getLoggerFor(GithubPRStatusPlugin.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GithubPRStatusPlugin.class);
 	private static final String PLUGIN_ID = "ch.adnovum.gong.notifier.email";
 
 	private Gson gson = new Gson();
-	private GoServerApi api;
 
 	public GithubPRStatusPlugin() {
 		super(PLUGIN_ID,
@@ -33,7 +32,7 @@ public class GithubPRStatusPlugin extends GongNotifierPluginBase {
 		LOGGER.info("Re-initializing with settings: " + gson.toJson(settings).
 				replaceAll("\"restPassword\":\"[^ \"]*\"","\"restPassword\":\"***\""));
 
-		api = new GoServerApi(settings.getServerUrl())
+		GoServerApi api = new GoServerApi(settings.getServerUrl())
 						.setAdminCredentials(settings.getRestUser(), settings.getRestPassword());
 		ConfigService srv = new ConfigService(api);
 		SecretDecryptService decSrv = new SecretDecryptService(new File(settings.getCipherKeyFile()));

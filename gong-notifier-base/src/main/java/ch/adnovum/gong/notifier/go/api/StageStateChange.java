@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@SuppressWarnings("java:S1104")
 public class StageStateChange {
 
 	public Pipeline pipeline;

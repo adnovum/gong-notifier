@@ -1,5 +1,6 @@
 package ch.adnovum.gong.notifier.go.api;
 
+@SuppressWarnings("java:S1104")
 public class SettingsField {
 
 	public String displayName;

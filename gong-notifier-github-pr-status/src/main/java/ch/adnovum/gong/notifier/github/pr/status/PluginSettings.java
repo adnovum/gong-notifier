@@ -1,17 +1,16 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
-import ch.adnovum.gong.notifier.PluginSettingsBase;
-import ch.adnovum.gong.notifier.go.api.SettingsField;
-
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import ch.adnovum.gong.notifier.PluginSettingsBase;
+import ch.adnovum.gong.notifier.go.api.SettingsField;
+
 public class PluginSettings extends PluginSettingsBase {
 
 	
-	public static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
+	static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
 	static {
 		FIELD_CONFIG.put("cipherKeyFile", new SettingsField("Cipher Key File", null, true, false, 0));
 	}
