@@ -16,6 +16,7 @@ workflows:
       - release:
           requires:
             - hold-for-release
+          context: GitHubRelease
 
 jobs:
   build:
