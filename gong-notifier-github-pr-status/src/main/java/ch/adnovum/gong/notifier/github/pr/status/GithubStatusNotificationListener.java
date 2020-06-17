@@ -2,6 +2,7 @@ package ch.adnovum.gong.notifier.github.pr.status;
 
 import ch.adnovum.gong.notifier.NotificationListener;
 import ch.adnovum.gong.notifier.events.BaseEvent;
+import ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GithubInfo;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig.EnvironmentVariable;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import ch.adnovum.gong.notifier.services.ConfigService;
@@ -9,17 +10,17 @@ import ch.adnovum.gong.notifier.services.SecretDecryptService;
 import ch.adnovum.gong.notifier.util.SecretDecryptException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
-public class GithubPRStatusNotificationListener implements NotificationListener {
+public class GithubStatusNotificationListener implements NotificationListener {
 
 
-	private static final Logger LOGGER = Logger.getLoggerFor(GithubPRStatusNotificationListener.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GithubStatusNotificationListener.class);
 
 	private final ConfigService cfgService;
 	private final SecretDecryptService decryptService;
 	private final GithubClient githubClient;
 	private final String serverDisplayUrl;
 
-	public GithubPRStatusNotificationListener(ConfigService cfgService, SecretDecryptService decryptService,
+	public GithubStatusNotificationListener(ConfigService cfgService, SecretDecryptService decryptService,
 											  GithubClient githubClient, String serverDisplayUrl) {
 		this.cfgService = cfgService;
 		this.decryptService = decryptService;
@@ -29,26 +30,26 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 
 	@Override
 	public void handle(BaseEvent event, StageStateChange stateChange) {
-		GithubPRStatusHelper.GithubPRInfo prInfo = GithubPRStatusHelper.getGithubPRInfo(stateChange);
-		if (prInfo == null) {
-			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have a Github PR material. Skipping.");
+		GithubInfo ghInfo = GithubStatusHelper.getGithubInfo(stateChange);
+		if (ghInfo == null) {
+			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have a Github material. Skipping.");
 			return;
 		}
-		if (prInfo.getRevision() == null) {
-			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have a Github PR revision. Skipping.");
+		if (ghInfo.getRevision() == null) {
+			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have a Github revision. Skipping.");
 			return;
 		}
 
-		String repo = GithubPRStatusHelper.getRepoFromUrl(prInfo.getUrl());
+		String repo = GithubStatusHelper.getRepoFromUrl(ghInfo.getUrl());
 		if (repo == null) {
 			LOGGER.debug(pipelineLogPrefix(stateChange) + "cannot extract valid Github repo from " +
-					"PR material URL " + prInfo.getUrl() + ". Skipping.");
+					"Github material URL " + ghInfo.getUrl() + ". Skipping.");
 			return;
 		}
 
-		EnvironmentVariable authTokenVar = fetchAccessTokenVariable(stateChange);
+		EnvironmentVariable authTokenVar = fetchAccessTokenVariable(stateChange, ghInfo);
 		if (authTokenVar == null) {
-			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have " + GithubPRStatusHelper.STATUS_AUTH_TOKEN +
+			LOGGER.debug(pipelineLogPrefix(stateChange) + "does not have " + GithubStatusHelper.STATUS_AUTH_TOKEN +
 					" set. Skipping.");
 			return;
 		}
@@ -57,7 +58,7 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 		try {
 			authToken = decryptValue(authTokenVar);
 		} catch (SecretDecryptException ex) {
-			LOGGER.error(pipelineLogPrefix(stateChange) + "could not decrypt " + GithubPRStatusHelper.STATUS_AUTH_TOKEN);
+			LOGGER.error(pipelineLogPrefix(stateChange) + "could not decrypt " + GithubStatusHelper.STATUS_AUTH_TOKEN);
 			return;
 		}
 
@@ -69,18 +70,18 @@ public class GithubPRStatusNotificationListener implements NotificationListener 
 		LOGGER.debug(pipelineLogPrefix(stateChange) + "changed to " + event +
 				". Auth token: " + authToken.substring(0,2) + "..." + authToken.substring(authToken.length() - 2) +
 				". Github repo: " + repo +
-				". Revision: " + prInfo.getRevision() +
+				". Revision: " + ghInfo.getRevision() +
 				". Url to pipeline: " + urlToPipeline);
 
 		try {
-			githubClient.updateCommitStatus(repo, prInfo.getRevision(), event, context,	urlToPipeline, authToken);
+			githubClient.updateCommitStatus(repo, ghInfo.getRevision(), event, context,	urlToPipeline, authToken);
 		} catch (GithubClient.GithubException e) {
 			LOGGER.error(pipelineLogPrefix(stateChange) + "could not update Github commit status", e);
 		}
 	}
 
-	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange) {
-		return GithubPRStatusHelper.fetchAccessTokenVariable(stateChange, cfgService).orElse(null);
+	private EnvironmentVariable fetchAccessTokenVariable(StageStateChange stateChange, GithubInfo ghInfo) {
+		return GithubStatusHelper.fetchAccessTokenVariable(stateChange, ghInfo, cfgService).orElse(null);
 	}
 
 	private String decryptValue(EnvironmentVariable var) throws SecretDecryptException {

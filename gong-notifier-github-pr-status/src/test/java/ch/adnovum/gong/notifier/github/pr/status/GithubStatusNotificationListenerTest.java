@@ -1,7 +1,7 @@
 package ch.adnovum.gong.notifier.github.pr.status;
 
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusHelper.EXPECTED_SCM_PLUGIN_ID;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.PR_PLUGIN_ID;
+import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.SCM_MATERIAL_TYPE;
 import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
 import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision;
 import static java.util.Collections.emptyList;
@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GithubPRStatusNotificationListenerTest {
+public class GithubStatusNotificationListenerTest {
 
 	@Mock
 	private ConfigService cfgService;
@@ -38,7 +38,7 @@ public class GithubPRStatusNotificationListenerTest {
 	@Mock
 	private GithubClient ghClient;
 
-	private GithubPRStatusNotificationListener prStatusListener;
+	private GithubStatusNotificationListener prStatusListener;
 
 	private final String pipeline = "pipeline1";
 	private final int pipelineCounter = 7;
@@ -57,15 +57,15 @@ public class GithubPRStatusNotificationListenerTest {
 
 	@Before
 	public void setup() throws SecretDecryptException {
-		prStatusListener = new GithubPRStatusNotificationListener(cfgService,
+		prStatusListener = new GithubStatusNotificationListener(cfgService,
 				decryptService, ghClient, "http://ci.localhost/go");
 
 		stateChange = createStageChangeWithMaterialAndRevision(pipeline, pipelineCounter, stage,
 				stageCounter, revision,
-				createMaterial(EXPECTED_MATERIAL_TYPE, EXPECTED_SCM_PLUGIN_ID, "https://github.com/adnovum/gong-notifier.git"));
+				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, "https://github.com/adnovum/gong-notifier.git"));
 
 		pipelineConfig = new PipelineConfig();
-		pipelineConfig.addSecureVariable(GithubPRStatusHelper.STATUS_AUTH_TOKEN, encryptedAuthToken);
+		pipelineConfig.addSecureVariable(GithubStatusHelper.STATUS_AUTH_TOKEN, encryptedAuthToken);
 		when(cfgService.fetchPipelineConfig(pipeline, pipelineCounter)).thenReturn(Optional.of(pipelineConfig));
 		when(decryptService.decrypt(encryptedAuthToken)).thenReturn(authToken);
 	}
