@@ -19,7 +19,6 @@ public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 	private static final String PLUGIN_ID = "ch.adnovum.gong.notifier.email";
 
 	private Gson gson = new Gson();
-	private GoServerApi api;
 
 	public GongNotifierEmailPlugin() {
 		super(PLUGIN_ID,
@@ -34,7 +33,7 @@ public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 		LOGGER.info("Re-initializing with settings: " + gson.toJson(settings).
 				replaceAll("\"restPassword\":\"[^ \"]*\"","\"restPassword\":\"***\""));
 
-		api = new GoServerApi(settings.getServerUrl())
+		GoServerApi api = new GoServerApi(settings.getServerUrl())
 						.setAdminCredentials(settings.getRestUser(), settings.getRestPassword());
 
 		ModificationListGenerator modListGenerator = new ModificationListGenerator(settings.getTimezone(), true);

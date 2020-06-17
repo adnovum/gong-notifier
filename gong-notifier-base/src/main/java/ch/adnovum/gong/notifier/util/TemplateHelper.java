@@ -8,6 +8,10 @@ public class TemplateHelper {
 
 	private static final Pattern VAR_PATTERN = Pattern.compile("\\{([^}]*)\\}");
 
+	private TemplateHelper() {
+		// Static utility class should not be instantiated.
+	}
+
 	public static String fillTemplate(String template, Map<String, Object> values) {
 		if (template == null || template.isEmpty()) {
 			return template;

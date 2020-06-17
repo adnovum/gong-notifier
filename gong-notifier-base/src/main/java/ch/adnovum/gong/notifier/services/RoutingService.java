@@ -19,7 +19,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class RoutingService {
 
-	private static Logger LOGGER = Logger.getLoggerFor(RoutingService.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(RoutingService.class);
 
 	private final ConfigService configService;
 

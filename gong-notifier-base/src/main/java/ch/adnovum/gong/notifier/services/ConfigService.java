@@ -7,11 +7,8 @@ import ch.adnovum.gong.notifier.go.api.GoServerApi;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.ScmConfig;
 import ch.adnovum.gong.notifier.util.SessionCache;
-import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class ConfigService {
-
-	private static Logger LOGGER = Logger.getLoggerFor(ConfigService.class);
 
 	private final SessionCache<String, PipelineConfig, Integer> pipelineConfigCache;
 	private final SessionCache<String, ScmConfig, Integer> scmConfigCache;

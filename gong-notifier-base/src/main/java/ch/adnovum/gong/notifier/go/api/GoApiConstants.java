@@ -7,4 +7,8 @@ public class GoApiConstants {
 	public static final String STATUS_PASSED = "Passed";
 	public static final String STATUS_FAILED = "Failed";
 	public static final String STATUS_CANCELLED = "Cancelled";
+
+	private GoApiConstants() {
+		// Static constants class.
+	}
 }

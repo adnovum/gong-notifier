@@ -1,6 +1,5 @@
 package ch.adnovum.gong.notifier.go.api;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,12 +8,11 @@ import java.util.Base64;
 import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class GoServerApi {
 
-	private static Logger LOGGER = Logger.getLoggerFor(GoServerApi.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GoServerApi.class);
 
 	private String baseUrl;
 	private String adminUser;
@@ -69,12 +67,5 @@ public class GoServerApi {
 			LOGGER.error("Error fetching " + url + ":", e);
 			return Optional.empty();
 		}
-	}
-
-	public static void main(String[] args) throws IOException {
-		new GoServerApi("http://localhost:8153/go")
-				.setAdminCredentials("admin", "password")
-				.fetchPipelineHistory("pipeline1")
-				.ifPresent(c -> System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(c)));
 	}
 }

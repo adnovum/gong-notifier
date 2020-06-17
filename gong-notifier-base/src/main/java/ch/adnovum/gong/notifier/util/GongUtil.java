@@ -9,13 +9,13 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class GongUtil {
 
-	private static Logger LOGGER = Logger.getLoggerFor(GongUtil.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GongUtil.class);
 
 	private GongUtil() {
 		// Static utility class should not be instantiated.
 	}
 
-	public static String readResourceString(String resourceUrl, Class clazz) {
+	public static String readResourceString(String resourceUrl, Class<?> clazz) {
 		try (InputStream is = clazz.getResourceAsStream(resourceUrl)) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			int r;
@@ -37,7 +37,7 @@ public class GongUtil {
 
 	public static String escapeHtml(String str) {
 		return str == null ? "" : str
-				.replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;");
+				.replace("<", "&lt;")
+				.replace(">", "&gt;");
 	}
 }

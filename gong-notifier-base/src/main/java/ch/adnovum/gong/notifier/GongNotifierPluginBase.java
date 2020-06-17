@@ -4,14 +4,13 @@ import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_BUILDING;
 import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_CANCELLED;
 import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_FAILED;
 import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_PASSED;
-import static java.util.Arrays.asList;
 
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import ch.adnovum.gong.notifier.events.BaseEvent;
 import ch.adnovum.gong.notifier.go.api.SettingsField;
@@ -21,7 +20,6 @@ import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
-import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.DefaultGoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
@@ -31,7 +29,7 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
 public abstract class GongNotifierPluginBase implements GoPlugin {
-	private static Logger LOGGER = Logger.getLoggerFor(GongNotifierPluginBase.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GongNotifierPluginBase.class);
 
 	private static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
 	private static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
@@ -41,7 +39,7 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 	private static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
 
 	private static final String EXTENSION_NAME = "notification";
-	private static final List<String> goSupportedVersions = asList("1.0");
+	private static final List<String> goSupportedVersions = Collections.singletonList("1.0");
 
 	private String pluginId;
 	private Class<? extends PluginSettingsBase> settingsClass;
@@ -85,7 +83,7 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 	}
 
 	@Override
-	public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
+	public GoPluginApiResponse handle(GoPluginApiRequest request) {
 		String requestName = request.requestName();
 		switch (requestName) {
 			case PLUGIN_SETTINGS_GET_CONFIGURATION:
@@ -93,14 +91,14 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 			case PLUGIN_SETTINGS_GET_VIEW:
 				return handleGetPluginSettingsView();
 			case PLUGIN_SETTINGS_VALIDATE_CONFIGURATION:
-				return handleValidatePluginSettingsConfiguration(request);
+				return handleValidatePluginSettingsConfiguration();
 			case REQUEST_NOTIFICATIONS_INTERESTED_IN:
 				return handleNotificationsInterestedIn();
 			case REQUEST_STAGE_STATUS:
 				return handleStageStatus(request);
+			default:
+				return error("Unknown request: " + requestName);
 		}
-
-		return error("Unknown request");
 	}
 
 	private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
@@ -113,14 +111,14 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 		return ok(response);
 	}
 
-	private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
+	private GoPluginApiResponse handleValidatePluginSettingsConfiguration() {
 		List<ValidationError> errors = new LinkedList<>();
 		return ok(errors);
 	}
 
 	private GoPluginApiResponse handleNotificationsInterestedIn() {
 		Map<String, Object> response = new HashMap<>();
-		response.put("notifications", Arrays.asList(REQUEST_STAGE_STATUS));
+		response.put("notifications", Collections.singletonList(REQUEST_STAGE_STATUS));
 		return ok(response);
 	}
 
@@ -130,13 +128,15 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 		GoApiResponse response = goApplicationAccessor.submit(request(GET_PLUGIN_SETTINGS, requestMap));
 		if (response.responseBody() == null || response.responseBody().trim().isEmpty()) {
 			LOGGER.info("Plugin not configured. Using defaults.");
+
 			try {
-				return settingsClass.newInstance();
+				return settingsClass.getDeclaredConstructor().newInstance();
 			}
-			catch (InstantiationException | IllegalAccessException e) {
+			catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				LOGGER.error("Could not create default plugins settings", e);
 				return null;
 			}
+
 		}
 		return new Gson().fromJson(response.responseBody(), settingsClass);
 	}
@@ -195,13 +195,6 @@ public abstract class GongNotifierPluginBase implements GoPlugin {
 		Map<String, String> response = new HashMap<>();
 		response.put("status", "success");
 		return ok(response);
-	}
-
-	private GoPluginApiResponse failureResponse(String... messages) {
-		Map<String, Object> response = new HashMap<>();
-		response.put("status", "failure");
-		response.put("messages", Arrays.asList(messages));
-		return error(response);
 	}
 
 	private GoApiRequest request(String api, Object request) {

@@ -16,7 +16,7 @@ import static ch.adnovum.gong.notifier.go.api.GoApiConstants.STATUS_PASSED;
 
 public class HistoryService {
 
-	private static Logger LOGGER = Logger.getLoggerFor(HistoryService.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(HistoryService.class);
 
 	private final SessionCache<String, PipelineHistory, Integer> historyCache;
 

@@ -6,7 +6,7 @@ import ch.adnovum.gong.notifier.go.api.StageStateChange;
 
 public class DebugNotificationListener implements NotificationListener {
 
-	private static Logger LOGGER = Logger.getLoggerFor(DebugNotificationListener.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(DebugNotificationListener.class);
 
 	@Override
 	public void handle(BaseEvent event, StageStateChange stateChange) {
