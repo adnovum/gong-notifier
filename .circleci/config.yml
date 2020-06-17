@@ -3,16 +3,28 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build:
+          context: SonarCloud
+      - hold-for-release:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - release:
+          requires:
+            - hold-for-release
+          context: GitHubRelease
+
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: circleci/openjdk:11-jdk
 
     working_directory: ~/repo
 
@@ -30,6 +42,10 @@ jobs:
           path: gong-notifier-email/build/libs
           destination: email-jars
 
+      - store_artifacts:
+          path: gong-notifier-github-pr-status/build/libs
+          destination: github-pr-status-jars
+
       - run: ./gradlew check
 
       - store_test_results:
@@ -38,3 +54,33 @@ jobs:
       - store_artifacts:
           path: build/reports/allTests
           destination: test-report
+
+      - run:
+          name: Analyze on SonarCloud
+          command: ./gradlew sonarqube
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - gong-notifier-email/build/libs/*.jar
+            - gong-notifier-github-pr-status/build/libs/*.jar
+            - build/version.txt
+
+  release:
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: Flatten artifacts hierarchy
+          command: |
+            mkdir flat
+            find artifacts -type f -exec cp {} flat/ \;
+      - run:
+          name: Publish Release on GitHub
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=$(cat ./flat/version.txt)
+            rm -f ./flat/version.txt
+            ghr -t ${GITHUB_RELEASE_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -b "Version ${VERSION}" ${VERSION} ./flat/

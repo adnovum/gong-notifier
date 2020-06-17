@@ -1,11 +1,9 @@
 dependencies {
     compile project(':gong-notifier-base')
-    compile 'com.sun.mail:javax.mail:1.5.6'
+    compile group: 'org.kohsuke', name: 'github-api', version: '1.112'
 
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-    testCompile "com.github.tomakehurst:wiremock:2.15.0"
-    testCompile group: 'com.icegreen', name: 'greenmail', version: '1.5.7'
 }
 
 

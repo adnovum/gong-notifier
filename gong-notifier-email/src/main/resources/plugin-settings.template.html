@@ -1,4 +1,9 @@
 <div class="form_item_block">
+    <label>Default events to notify:</label>
+    <input id="default-events" type="text" ng-model="defaultEvents" placeholder="fixed, broken, failed"/>
+    <span class="form_error" ng-show="GOINPUTNAME[defaultEvents].$error.server">{{ GOINPUTNAME[defaultEvents].$error.server }}</span>
+</div>
+<div class="form_item_block">
     <label>SMTP Host:</label>
     <input type="text" ng-model="smtpHost" placeholder="smtp.mycompany.com"/>
     <span class="form_error" ng-show="GOINPUTNAME[smtpHost].$error.server">{{ GOINPUTNAME[smtpHost].$error.server }}</span>

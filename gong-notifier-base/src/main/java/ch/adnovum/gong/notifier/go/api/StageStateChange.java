@@ -1,5 +1,10 @@
 package ch.adnovum.gong.notifier.go.api;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+@SuppressWarnings("java:S1104")
 public class StageStateChange {
 
 	public Pipeline pipeline;
@@ -40,11 +45,37 @@ public class StageStateChange {
 		public String name;
 		public Stage stage;
 		public Integer counter;
+		@SerializedName("build-cause")
+		public List<BuildCause> buildCause;
 	}
 
 	public static class Stage {
 		public String name;
 		public String state;
 		public Integer counter;
+	}
+
+	public static class BuildCause {
+		public Material material;
+		public List<Modification> modifications;
+	}
+
+	public static class Material {
+
+		public String type;
+
+		@SerializedName("plugin-id")
+		public String pluginId;
+
+		@SerializedName(value = "scm-configuration", alternate = {"git-configuration"})
+		public MaterialConfig configuration;
+	}
+
+	public static class MaterialConfig {
+		public String url;
+	}
+
+	public static class Modification {
+		public String revision;
 	}
 }

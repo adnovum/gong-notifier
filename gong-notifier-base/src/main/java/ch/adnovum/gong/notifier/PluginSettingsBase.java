@@ -1,9 +1,6 @@
 package ch.adnovum.gong.notifier;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import ch.adnovum.gong.notifier.events.HistoricalEvent;
@@ -15,7 +12,6 @@ public class PluginSettingsBase {
 	private static final String DEFAULT_SERVER_DISPLAY_URL = "https://localhost:8154/go";
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
-	private static final String DEFAULT_EVENTS = "broken, fixed, failed";
 	
 	public static final Map<String, SettingsField> BASE_FIELD_CONFIG = new HashMap<>();
 	static {
@@ -23,15 +19,12 @@ public class PluginSettingsBase {
 		BASE_FIELD_CONFIG.put("serverDisplayUrl", new SettingsField("Server Display URL", DEFAULT_SERVER_DISPLAY_URL, false, false, 0));
 		BASE_FIELD_CONFIG.put("restUser", new SettingsField("Rest User", DEFAULT_REST_USER, false, false, 0));
 		BASE_FIELD_CONFIG.put("restPassword", new SettingsField("Rest Password", DEFAULT_REST_PASSWORD, false, true, 0));
-		BASE_FIELD_CONFIG.put("defaultEvents", new SettingsField("Default notification events", DEFAULT_EVENTS, false, false,
-				0));
 	}
 
 	private String serverUrl = DEFAULT_SERVER_URL;
 	private String serverDisplayUrl = DEFAULT_SERVER_DISPLAY_URL;
 	private String restUser = DEFAULT_REST_USER;
 	private String restPassword = DEFAULT_REST_PASSWORD;
-	private String defaultEvents = DEFAULT_EVENTS;
 
 	public String getServerDisplayUrl() {
 		return valueOrDefault(serverDisplayUrl, DEFAULT_SERVER_DISPLAY_URL);
@@ -65,59 +58,23 @@ public class PluginSettingsBase {
 		this.restPassword = restPassword;
 	}
 
-	public String getDefaultEvents() {
-		return valueOrDefault(defaultEvents, DEFAULT_EVENTS);
-	}
-
-	public Set<HistoricalEvent> getDefaultEventsSet() {
-		return Arrays.stream(getDefaultEvents().split("\\s*,\\s*"))
-				.map(String::toUpperCase)
-				.map(HistoricalEvent::valueOf)
-				.collect(Collectors.toSet());
-	}
-
-	public void setDefaultEvents(String defaultEvents) {
-		this.defaultEvents = defaultEvents;
-	}
-
 	private static String valueOrDefault(String value, String defaultValue) {
 		return value == null || value.isEmpty() ? defaultValue : value;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 		PluginSettingsBase that = (PluginSettingsBase) o;
-
-		if (getServerUrl() != null ? !getServerUrl().equals(that.getServerUrl()) : that.getServerUrl() != null) {
-			return false;
-		}
-		if (getServerDisplayUrl() != null ? !getServerDisplayUrl().equals(that.getServerDisplayUrl())
-				: that.getServerDisplayUrl() != null) {
-			return false;
-		}
-		if (getRestUser() != null ? !getRestUser().equals(that.getRestUser()) : that.getRestUser() != null) {
-			return false;
-		}
-		if (getRestPassword() != null ? !getRestPassword().equals(that.getRestPassword()) : that.getRestPassword() != null) {
-			return false;
-		}
-		return getDefaultEvents() != null ? getDefaultEvents().equals(that.getDefaultEvents()) : that.getDefaultEvents() == null;
+		return Objects.equals(getServerUrl(), that.getServerUrl()) &&
+				Objects.equals(getServerDisplayUrl(), that.getServerDisplayUrl()) &&
+				Objects.equals(getRestUser(), that.getRestUser()) &&
+				Objects.equals(getRestPassword(), that.getRestPassword());
 	}
 
 	@Override
 	public int hashCode() {
-		int result = getServerUrl() != null ? getServerUrl().hashCode() : 0;
-		result = 31 * result + (getServerDisplayUrl() != null ? getServerDisplayUrl().hashCode() : 0);
-		result = 31 * result + (getRestUser() != null ? getRestUser().hashCode() : 0);
-		result = 31 * result + (getRestPassword() != null ? getRestPassword().hashCode() : 0);
-		result = 31 * result + (getDefaultEvents() != null ? getDefaultEvents().hashCode() : 0);
-		return result;
+		return Objects.hash(getServerUrl(), getServerDisplayUrl(), getRestUser(), getRestPassword());
 	}
 }

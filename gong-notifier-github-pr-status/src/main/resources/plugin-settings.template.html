@@ -1,0 +1,7 @@
+<div class="form_item_block">
+    <label>Cipher Key File:
+    <br/><i>To decrypt auth token variables in the pipeline configs</i>
+    </label>
+    <input type="text" ng-model="cipherKeyFile" placeholder="/godata/config/cipher.aes"/>
+    <span class="form_error" ng-show="GOINPUTNAME[cipherKeyFile].$error.server">{{ GOINPUTNAME[cipherKeyFile].$error.server }}</span>
+</div>

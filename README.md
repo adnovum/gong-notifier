@@ -8,7 +8,9 @@ Instead of each user specifying what they want to get notified about; or having 
 managed by an admin, this plugin allows setting notification rules in the pipeline configuration via environment variables.
 
 The following plugins exist:
-- gong-notifier-email: Sends E-Mail notifications
+
+- [gong-notifier-email](gong-notifier-email): Sends E-Mail notifications
+- [gong-notifier-github-pr-status](gong-notifier-github-pr-status): Updates pull-request status on GitHub
 
 For detailed user guides, please see the respective plugin readmes.
 
@@ -17,13 +19,16 @@ For detailed user guides, please see the respective plugin readmes.
 ### Building
 
 The project uses Gradle as its build tool.
-```
+
+```shell
 ./gradlew assemble
 ```
-This builds the final jar file (which includes all dependencies) in ```build/libs```. 
+
+This builds the final jar file (which includes all dependencies) in ```build/libs```.
 
 You can run all tests with:
-```
+
+```shell
 ./gradlew check
 ```
 
