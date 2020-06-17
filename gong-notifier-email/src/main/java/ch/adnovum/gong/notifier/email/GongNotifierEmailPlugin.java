@@ -7,6 +7,7 @@ import ch.adnovum.gong.notifier.services.ConfigService;
 import ch.adnovum.gong.notifier.services.HistoryService;
 import ch.adnovum.gong.notifier.services.RoutingService;
 import ch.adnovum.gong.notifier.util.GongUtil;
+import ch.adnovum.gong.notifier.util.ModificationListGenerator;
 import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
@@ -14,7 +15,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 @Extension
 public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 
-	private static Logger LOGGER = Logger.getLoggerFor(GongNotifierEmailPlugin.class);
+	private static final Logger LOGGER = Logger.getLoggerFor(GongNotifierEmailPlugin.class);
 	private static final String PLUGIN_ID = "ch.adnovum.gong.notifier.email";
 
 	private Gson gson = new Gson();
@@ -35,11 +36,20 @@ public class GongNotifierEmailPlugin extends GongNotifierPluginBase {
 
 		api = new GoServerApi(settings.getServerUrl())
 						.setAdminCredentials(settings.getRestUser(), settings.getRestPassword());
+
+		ModificationListGenerator modListGenerator = new ModificationListGenerator(settings.getTimezone(), true);
+
+		EmailTemplateService templateService = new EmailTemplateService(settings.getSubjectTemplate(),
+				settings.getBodyTemplate(), settings.getServerDisplayUrl(), modListGenerator);
+
 		EmailSender sender = new JavaxEmailSender(settings.getSmtpHost(), settings.getSmtpPort());
 
-		addListener(new DebugNotificationListener());
 		HistoryService history = new HistoryService(api);
+
 		RoutingService router = new RoutingService(new ConfigService(api));
-		addListener(new EmailNotificationListener(history, router, sender, settings));
+
+		addListener(new DebugNotificationListener());
+		addListener(new EmailNotificationListener(history, router, templateService, sender, settings.getSenderEmail(),
+				settings.getDefaultEventsSet()));
 	}
 }
