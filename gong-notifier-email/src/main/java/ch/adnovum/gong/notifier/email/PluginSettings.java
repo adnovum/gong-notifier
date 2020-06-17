@@ -18,7 +18,7 @@ public class PluginSettings extends PluginSettingsBase {
 	private static final String DEFAULT_BODY_TEMPLATE = GongUtil.readResourceString("/default-email-body.template.html");
 	private static final String DEFAULT_TIMEZONE = null;
 	
-	public static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
+	static final Map<String, SettingsField> FIELD_CONFIG = new HashMap<>();
 	static {
 		FIELD_CONFIG.put("defaultEvents", new SettingsField("Default notification events", DEFAULT_EVENTS, false, false,
 				0));

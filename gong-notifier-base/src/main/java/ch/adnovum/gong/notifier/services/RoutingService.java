@@ -1,12 +1,21 @@
 package ch.adnovum.gong.notifier.services;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import ch.adnovum.gong.notifier.events.HistoricalEvent;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import com.thoughtworks.go.plugin.api.logging.Logger;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RoutingService {
 
@@ -147,7 +156,10 @@ public class RoutingService {
 		}
 
 		boolean appliesToEvent(HistoricalEvent event) {
-			return ("all".equals(requiredEvent) && matchesDefaultEvent(event, defaultEvents)) || event.getValue().equals(requiredEvent);
+			if ("all".equals(requiredEvent)) {
+				return matchesDefaultEvent(event, defaultEvents);
+			}
+			return event != null && event.getValue().equals(requiredEvent);
 		}
 
 		boolean appliesToStage(String stage) {

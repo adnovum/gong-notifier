@@ -1,9 +1,9 @@
 package ch.adnovum.gong.notifier;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-import ch.adnovum.gong.notifier.events.HistoricalEvent;
 import ch.adnovum.gong.notifier.go.api.SettingsField;
 
 public class PluginSettingsBase {
@@ -13,7 +13,7 @@ public class PluginSettingsBase {
 	private static final String DEFAULT_REST_USER = null;
 	private static final String DEFAULT_REST_PASSWORD = null;
 	
-	public static final Map<String, SettingsField> BASE_FIELD_CONFIG = new HashMap<>();
+	static final Map<String, SettingsField> BASE_FIELD_CONFIG = new HashMap<>();
 	static {
 		BASE_FIELD_CONFIG.put("serverUrl", new SettingsField("Server URL", DEFAULT_SERVER_URL, false, false, 0));
 		BASE_FIELD_CONFIG.put("serverDisplayUrl", new SettingsField("Server Display URL", DEFAULT_SERVER_DISPLAY_URL, false, false, 0));

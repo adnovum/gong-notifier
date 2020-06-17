@@ -57,7 +57,8 @@ public class GoServerApi {
 			}
 			if (user != null) {
 				String auth = Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8));
-				conn.addRequestProperty("Authorization", "Basic " + auth);
+				conn.addRequestProperty("Authorization", "Basic " + auth);	// NOSONAR java:S2647: http scheme is user's choice
+																			// and general it's only localhost
 			}
 			try (InputStreamReader r = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)) {
 				T t = new Gson().fromJson(r, clazz);
