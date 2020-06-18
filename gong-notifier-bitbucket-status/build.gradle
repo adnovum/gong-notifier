@@ -1,0 +1,20 @@
+dependencies {
+    compile project(':gong-notifier-base')
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.7.2'
+
+    testCompile 'junit:junit:4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+}
+
+
+processResources {
+    filesMatching("plugin.xml") {
+        expand project.properties
+    }
+}
+
+jar {
+    into('lib/') {
+        from { configurations.compile.collect { it } }
+    }
+}

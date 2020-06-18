@@ -1,0 +1,26 @@
+<div class="form_item_block">
+    <label>Bitbucket base URL:
+        <br/><i>For REST calls</i>
+    </label>
+    <input type="text" ng-model="bitbucketBaseUrl" placeholder="http://mycompany.com/bitbucket"/>
+    <span class="form_error" ng-show="GOINPUTNAME[bitbucketBaseUrl].$error.server">{{ GOINPUTNAME[bitbucketBaseUrl].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Bitbucket clone pattern:
+        <br/><i>Should capture the project and repository name</i>
+    </label>
+    <input type="text" ng-model="bitbucketClonePattern" placeholder="http://mycompany.com/bitbucket/scm/([^/]+)/([^/]+).git"/>
+    <span class="form_error" ng-show="GOINPUTNAME[bitbucketClonePattern].$error.server">{{ GOINPUTNAME[bitbucketClonePattern].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Bitbucket global access token:</label>
+    <input type="password" ng-model="bitbucketGlobalAccessToken"/>
+    <span class="form_error" ng-show="GOINPUTNAME[bitbucketGlobalAccessToken].$error.server">{{ GOINPUTNAME[bitbucketGlobalAccessToken].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Cipher Key File:
+    <br/><i>To decrypt auth token variables in the pipeline configs</i>
+    </label>
+    <input type="text" ng-model="cipherKeyFile" placeholder="/godata/config/cipher.aes"/>
+    <span class="form_error" ng-show="GOINPUTNAME[cipherKeyFile].$error.server">{{ GOINPUTNAME[cipherKeyFile].$error.server }}</span>
+</div>

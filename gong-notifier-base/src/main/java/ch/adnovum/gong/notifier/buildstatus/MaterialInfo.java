@@ -37,19 +37,19 @@ public class MaterialInfo {
 		SCM
 	}
 
-	MaterialType getMaterialType() {
+	public MaterialType getMaterialType() {
 		return materialType;
 	}
 
-	void setMaterialType(MaterialType materialType) {
+	public void setMaterialType(MaterialType materialType) {
 		this.materialType = materialType;
 	}
 
-	String getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
-	void setUrl(String url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 
@@ -57,7 +57,7 @@ public class MaterialInfo {
 		return repoCoordinates;
 	}
 
-	void setRepoCoordinates(RepoCoordinates repoCoordinates) {
+	public void setRepoCoordinates(RepoCoordinates repoCoordinates) {
 		this.repoCoordinates = repoCoordinates;
 	}
 
@@ -65,7 +65,7 @@ public class MaterialInfo {
 		return revision;
 	}
 
-	void setRevision(String revision) {
+	public void setRevision(String revision) {
 		this.revision = revision;
 	}
 }

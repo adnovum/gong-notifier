@@ -142,7 +142,7 @@ public class BuildStatusService {
 		Optional<String> prMatName = cfg.materials.stream()
 				.filter(m -> "plugin".equals(m.type))
 				.filter(m -> m.attributes.containsKey("ref"))
-				.map(m -> m.attributes.get("ref"))
+				.map(m -> (String) m.attributes.get("ref"))
 				.findFirst();
 
 		Optional<ScmConfig> prMatCfg = prMatName
@@ -175,8 +175,8 @@ public class BuildStatusService {
 		EnvironmentVariable var = new EnvironmentVariable();
 		var.name = "password";
 		var.secure = mat.attributes.containsKey(ENCRYPTED_PASSWORD_KEY);
-		var.value = mat.attributes.get(PASSWORD_KEY);
-		var.encryptedValue = mat.attributes.get(ENCRYPTED_PASSWORD_KEY);
+		var.value = (String) mat.attributes.get(PASSWORD_KEY);
+		var.encryptedValue = (String) mat.attributes.get(ENCRYPTED_PASSWORD_KEY);
 		return var;
 	}
 

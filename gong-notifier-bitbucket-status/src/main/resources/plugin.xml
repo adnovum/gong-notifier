@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="${rootProject.group}.bitbucket.status" version="1">
+    <about>
+        <name>Gong Notifier Bitbucket Status</name>
+        <version>$version</version>
+        <target-go-version>$goVersion</target-go-version>
+        <description>Plugin to update a build status in Bitbucket.</description>
+        <vendor>
+            <name>AdNovum Informatik AG</name>
+            <url></url>
+        </vendor>
+    </about>
+</go-plugin>
