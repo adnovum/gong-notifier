@@ -3,7 +3,10 @@ package ch.adnovum.gong.notifier.github.status;
 import java.io.File;
 
 import ch.adnovum.gong.notifier.GongNotifierPluginBase;
+import ch.adnovum.gong.notifier.buildstatus.GitHostSpec;
 import ch.adnovum.gong.notifier.go.api.GoServerApi;
+import ch.adnovum.gong.notifier.buildstatus.BuildStatusNotificationListener;
+import ch.adnovum.gong.notifier.buildstatus.BuildStatusService;
 import ch.adnovum.gong.notifier.services.ConfigService;
 import ch.adnovum.gong.notifier.services.SecretDecryptService;
 import ch.adnovum.gong.notifier.util.GongUtil;
@@ -34,10 +37,13 @@ public class GithubStatusPlugin extends GongNotifierPluginBase {
 
 		GoServerApi api = new GoServerApi(settings.getServerUrl())
 						.setAdminCredentials(settings.getRestUser(), settings.getRestPassword());
-		ConfigService srv = new ConfigService(api);
-		SecretDecryptService decSrv = new SecretDecryptService(new File(settings.getCipherKeyFile()));
+		ConfigService configService = new ConfigService(api);
+		SecretDecryptService decryptService = new SecretDecryptService(new File(settings.getCipherKeyFile()));
 		GithubClient ghClient = new GithubClient();
+		GitHostSpec ghSpec = new GithubSpec();
 
-		addListener(new GithubStatusNotificationListener(srv, decSrv, ghClient, settings.getServerDisplayUrl()));
+		BuildStatusService statusService = new BuildStatusService(configService, decryptService, ghSpec);
+
+		addListener(new BuildStatusNotificationListener(statusService, ghClient, settings.getServerDisplayUrl()));
 	}
 }

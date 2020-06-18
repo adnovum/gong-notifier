@@ -1,8 +1,8 @@
 package ch.adnovum.gong.notifier.go.api;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("java:S1104")
 public class StageStateChange {
@@ -69,6 +69,15 @@ public class StageStateChange {
 
 		@SerializedName(value = "scm-configuration", alternate = {"git-configuration"})
 		public MaterialConfig configuration;
+
+		@Override
+		public String toString() {
+			return "Material{" +
+					"type='" + type + '\'' +
+					", pluginId='" + pluginId + '\'' +
+					", configuration=" + configuration +
+					'}';
+		}
 	}
 
 	public static class MaterialConfig {
