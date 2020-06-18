@@ -1,10 +1,9 @@
-# Gong Notifier GitHub PR Status
+# Gong Notifier GitHub Status
 
-This plugin will update the commit status of pull-requests on GitHub. This assumes GoCD is building
-pull-requests with the  [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests).
+This plugin will update the status of a commit on Github when it is built in GoCD.
+It supports both regular builds as well as pull-request builds that use the  [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests).
 
-It will set the commit status to **pending**, **success**, **failed**, or **error** depending on the status of
-the associated GoCD pull-request pipeline.
+It will set the commit status to **pending**, **success**, **failed**, or **error** depending on the status of the associated GoCD pipeline.
 
 Instead of requiring a **central** authentication token for GitHub, the plugin allows each pipeline owner
 to define their own authentication token in a secure environment variable in the pipeline configuration.
@@ -47,8 +46,8 @@ variables. They do not need to be set if your server does not have any authoriza
 
 Only pipelines matching the following criteria can make use of the PR status update:
 
-* Pipeline uses a pull-request material of type "github.pr" (provided by [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests))
-* The pull-request material points to a repository on github.com
+* Pipeline uses a normal Git material or a pull-request material of type "github.pr" (provided by [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests))
+* The material points to a repository on github.com
 * An access token for Github is configured for the pipeline (see below).
 
 ### Github access token
@@ -61,29 +60,32 @@ There are two ways to configure the access token:
 1. As a secret variable `GONG_STATUS_AUTH_TOKEN`. The variable must be defined on the pipeline, not on a stage or job.
 See also the [personal access tokens](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 documentation on GitHub.  
-Example: ![Sample configuration](pipeline_config.png)
-2. As a configuration setting `password` on the pull-request material itself. This means the plugin will
+Example:  
+![Sample configuration](pipeline_config.png)
+2. As a password set on the material itself. This means the plugin will
 use the same token that was used to check out the repository.  
-Example:
+Example for Git materials:  
+![Sample configuration](git_mat_config.png)  
+Example for PR materials:
 
-```xml
-<scm id="my.pr" name="my.pr">
-  <pluginConfiguration id="github.pr" version="1" />
-  <configuration>
-  <property>
-    <key>url</key>
-    <value>https://github.com/company/my-repo.git</value>
-  </property>
-  <property>
-    <key>username</key>
-    <value>myuser</value>
-  </property>
-  <property>
-    <key>password</key>
-    <encryptedValue>AES:123456</encryptedValue>
-  </property>
-  </configuration>
-</scm>
-```
+    ```xml
+    <scm id="my.pr" name="my.pr">
+      <pluginConfiguration id="github.pr" version="1" />
+      <configuration>
+      <property>
+        <key>url</key>
+        <value>https://github.com/company/my-repo.git</value>
+      </property>
+      <property>
+        <key>username</key>
+        <value>myuser</value>
+      </property>
+      <property>
+        <key>password</key>
+        <encryptedValue>AES:123456</encryptedValue>
+      </property>
+      </configuration>
+    </scm>
+    ```
 
 Note that the `GONG_STATUS_AUTH_TOKEN` pipeline variable takes precedence.
