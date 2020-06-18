@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
 import ch.adnovum.gong.notifier.events.BaseEvent;
 import org.kohsuke.github.GHCommitState;

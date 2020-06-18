@@ -1,9 +1,5 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.PR_PLUGIN_ID;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.SCM_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision;
 import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
@@ -60,9 +56,9 @@ public class GithubStatusNotificationListenerTest {
 		prStatusListener = new GithubStatusNotificationListener(cfgService,
 				decryptService, ghClient, "http://ci.localhost/go");
 
-		stateChange = createStageChangeWithMaterialAndRevision(pipeline, pipelineCounter, stage,
+		stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision(pipeline, pipelineCounter, stage,
 				stageCounter, revision,
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, "https://github.com/adnovum/gong-notifier.git"));
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, "https://github.com/adnovum/gong-notifier.git"));
 
 		pipelineConfig = new PipelineConfig();
 		pipelineConfig.addSecureVariable(GithubStatusHelper.STATUS_AUTH_TOKEN, encryptedAuthToken);
@@ -91,9 +87,9 @@ public class GithubStatusNotificationListenerTest {
 
 	@Test
 	public void shouldHandleStatusUpdate_NoPR() throws Exception {
-		stateChange = createStageChangeWithMaterialAndRevision(pipeline, pipelineCounter, stage,
+		stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterialAndRevision(pipeline, pipelineCounter, stage,
 				stageCounter, revision,
-				createMaterial("some-other-type", null, "https://github.com/adnovum/gong-notifier.git"));
+				GithubPRStatusTestHelper.createMaterial("some-other-type", null, "https://github.com/adnovum/gong-notifier.git"));
 
 		prStatusListener.handle(event, stateChange);
 

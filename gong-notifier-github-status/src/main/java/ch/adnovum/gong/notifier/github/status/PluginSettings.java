@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
 import ch.adnovum.gong.notifier.NotificationListener;
 import ch.adnovum.gong.notifier.events.BaseEvent;
-import ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GithubInfo;
+import ch.adnovum.gong.notifier.github.status.GithubStatusHelper.GithubInfo;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig.EnvironmentVariable;
 import ch.adnovum.gong.notifier.go.api.StageStateChange;
 import ch.adnovum.gong.notifier.services.ConfigService;

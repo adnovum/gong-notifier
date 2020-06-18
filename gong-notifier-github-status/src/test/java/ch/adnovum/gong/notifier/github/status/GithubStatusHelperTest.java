@@ -1,12 +1,6 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GIT_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GIT_PLUGIN_ID;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.SCM_MATERIAL_TYPE;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.PR_PLUGIN_ID;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GithubInfo;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createMaterial;
-import static ch.adnovum.gong.notifier.github.pr.status.GithubPRStatusTestHelper.createStageChangeWithMaterials;
+import static ch.adnovum.gong.notifier.github.status.GithubPRStatusTestHelper.createStageChangeWithMaterials;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyInt;
@@ -16,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.Optional;
 
-import ch.adnovum.gong.notifier.github.pr.status.GithubStatusHelper.GithubMaterialType;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig;
 import ch.adnovum.gong.notifier.go.api.PipelineConfig.EnvironmentVariable;
 import ch.adnovum.gong.notifier.go.api.ScmConfig;
@@ -37,14 +30,14 @@ public class GithubStatusHelperTest {
 	public void shoudGetGithubInfo_ForPRMaterial() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
 		final String revision = "12345";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, url)
 		);
 		StageStateChange.Modification mod = new StageStateChange.Modification();
 		mod.revision = revision;
 		stateChange.pipeline.buildCause.get(0).modifications = Collections.singletonList(mod);
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertEquals(url, info.getUrl());
 		assertEquals(revision, info.getRevision());
 	}
@@ -53,14 +46,15 @@ public class GithubStatusHelperTest {
 	public void shoudGetGithubInfo_ForGitMaterial() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
 		final String revision = "12345";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(GIT_MATERIAL_TYPE, GIT_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.GIT_MATERIAL_TYPE, GithubStatusHelper.GIT_PLUGIN_ID, url)
 		);
 		StageStateChange.Modification mod = new StageStateChange.Modification();
 		mod.revision = revision;
 		stateChange.pipeline.buildCause.get(0).modifications = Collections.singletonList(mod);
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertEquals(url, info.getUrl());
 		assertEquals(revision, info.getRevision());
 	}
@@ -68,11 +62,11 @@ public class GithubStatusHelperTest {
 	@Test
 	public void shoudGetGithubInfo_WithoutRevision() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, url)
 		);
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertEquals(url, info.getUrl());
 		assertNull(info.getRevision());
 	}
@@ -80,44 +74,48 @@ public class GithubStatusHelperTest {
 	@Test
 	public void shoudGetGithubInfo_ManyBuildCauses() {
 		final String url = "https://github.com/adnovum/gong-notifier.git";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
-				createMaterial("different-type", PR_PLUGIN_ID, "different/mat/type"),
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, "not/a/gh/url"),
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
+				GithubPRStatusTestHelper.createMaterial("different-type", GithubStatusHelper.PR_PLUGIN_ID, "different/mat/type"),
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, "not/a/gh/url"),
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, url)
 
 		);
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertEquals(url, info.getUrl());
 	}
 
 	@Test
 	public void shoudGetGithubInfo_NoMatchingBuildCause() {
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
-				createMaterial("different-type", PR_PLUGIN_ID, "different/mat/type"),
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, "not/a/gh/url")
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, "different.plugin.id", "different/plugin/url"),
+				GithubPRStatusTestHelper.createMaterial("different-type", GithubStatusHelper.PR_PLUGIN_ID, "different/mat/type"),
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, "not/a/gh/url")
 		);
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertNull(info);
 	}
 
 	@Test
 	public void shoudGetGithubInfo_NoBuildCauses() {
-		StageStateChange stateChange = createStageChangeWithMaterials();
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials();
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertNull(info);
 	}
 
 	@Test
 	public void shoudgetGithubInfo_BuildCauseWithoutMaterial() {
-		StageStateChange stateChange = createStageChangeWithMaterials();
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials();
 		stateChange.pipeline.buildCause = Collections.singletonList(new StageStateChange.BuildCause());
 
-		GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
+		GithubStatusHelper.GithubInfo info = GithubStatusHelper.getGithubInfo(stateChange);
 		assertNull(info);
 	}
 
@@ -150,11 +148,12 @@ public class GithubStatusHelperTest {
 		// Given
 		final String encryptedToken = "AES:12345";
 		final String url = "https://github.com/adnovum/gong-notifier.git";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, url)
 		);
 
-		GithubInfo ghInfo = new GithubInfo(GithubMaterialType.PR, url, "1234");
+		GithubStatusHelper.GithubInfo
+				ghInfo = new GithubStatusHelper.GithubInfo(GithubStatusHelper.GithubMaterialType.PR, url, "1234");
 
 		PipelineConfig pipelineConfig = new PipelineConfig();
 		pipelineConfig.addSecureVariable(GithubStatusHelper.STATUS_AUTH_TOKEN, encryptedToken);
@@ -172,11 +171,12 @@ public class GithubStatusHelperTest {
 		// Given
 		final String encryptedToken = "AES:12345";
 		final String url = "https://github.com/adnovum/gong-notifier.git";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(SCM_MATERIAL_TYPE, PR_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper.createMaterial(GithubStatusHelper.SCM_MATERIAL_TYPE, GithubStatusHelper.PR_PLUGIN_ID, url)
 		);
 
-		GithubInfo ghInfo = new GithubInfo(GithubMaterialType.PR, url, "1234");
+		GithubStatusHelper.GithubInfo
+				ghInfo = new GithubStatusHelper.GithubInfo(GithubStatusHelper.GithubMaterialType.PR, url, "1234");
 
 		final String matName = "foo.bar.pr";
 		PipelineConfig.Material material = new PipelineConfig.Material();
@@ -202,11 +202,13 @@ public class GithubStatusHelperTest {
 		// Given
 		final String encryptedToken = "AES:12345";
 		final String url = "https://github.com/adnovum/gong-notifier.git";
-		StageStateChange stateChange = createStageChangeWithMaterials(
-				createMaterial(GIT_MATERIAL_TYPE, GIT_PLUGIN_ID, url)
+		StageStateChange stateChange = GithubPRStatusTestHelper.createStageChangeWithMaterials(
+				GithubPRStatusTestHelper
+						.createMaterial(GithubStatusHelper.GIT_MATERIAL_TYPE, GithubStatusHelper.GIT_PLUGIN_ID, url)
 		);
 
-		GithubInfo ghInfo = new GithubInfo(GithubMaterialType.GIT, url, "1234");
+		GithubStatusHelper.GithubInfo
+				ghInfo = new GithubStatusHelper.GithubInfo(GithubStatusHelper.GithubMaterialType.GIT, url, "1234");
 
 		PipelineConfig.Material material = new PipelineConfig.Material();
 		material.type = "git";
