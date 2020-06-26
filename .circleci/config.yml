@@ -43,8 +43,8 @@ jobs:
           destination: email-jars
 
       - store_artifacts:
-          path: gong-notifier-github-pr-status/build/libs
-          destination: github-pr-status-jars
+          path: gong-notifier-github-status/build/libs
+          destination: github-status-jars
 
       - run: ./gradlew check
 
@@ -63,7 +63,7 @@ jobs:
           root: .
           paths:
             - gong-notifier-email/build/libs/*.jar
-            - gong-notifier-github-pr-status/build/libs/*.jar
+            - gong-notifier-github-status/build/libs/*.jar
             - build/version.txt
 
   release:

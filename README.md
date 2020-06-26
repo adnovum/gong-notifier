@@ -11,7 +11,7 @@ managed by an admin, this plugin allows setting notification rules in the pipeli
 The following plugins exist:
 
 - [gong-notifier-email](gong-notifier-email): Sends E-Mail notifications
-- [gong-notifier-github-pr-status](gong-notifier-github-pr-status): Updates pull-request status on GitHub
+- [gong-notifier-github-status](gong-notifier-github-status): Updates commit status on GitHub
 
 For detailed user guides, please see the respective plugin readmes.
 
