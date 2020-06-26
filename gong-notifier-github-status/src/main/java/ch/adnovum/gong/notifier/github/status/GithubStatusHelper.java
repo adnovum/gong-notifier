@@ -191,7 +191,7 @@ public class GithubStatusHelper {
 
 	private static EnvironmentVariable gitMatToEnvVar(PipelineConfig.Material mat) {
 		EnvironmentVariable var = new EnvironmentVariable();
-		var.name = "password";
+		var.name = PASSWORD_KEY;
 		var.secure = mat.attributes.containsKey(ENCRYPTED_PASSWORD_KEY);
 		var.value = mat.attributes.get(PASSWORD_KEY);
 		var.encryptedValue = mat.attributes.get(ENCRYPTED_PASSWORD_KEY);
