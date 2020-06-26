@@ -1,4 +1,4 @@
-package ch.adnovum.gong.notifier.github.pr.status;
+package ch.adnovum.gong.notifier.github.status;
 
 import java.io.File;
 
@@ -12,14 +12,14 @@ import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 
 @Extension
-public class GithubPRStatusPlugin extends GongNotifierPluginBase {
+public class GithubStatusPlugin extends GongNotifierPluginBase {
 
-	private static final Logger LOGGER = Logger.getLoggerFor(GithubPRStatusPlugin.class);
-	private static final String PLUGIN_ID = "ch.adnovum.gong.notifier.email";
+	private static final Logger LOGGER = Logger.getLoggerFor(GithubStatusPlugin.class);
+	private static final String PLUGIN_ID = "ch.adnovum.gong.notifier.github.status";
 
 	private Gson gson = new Gson();
 
-	public GithubPRStatusPlugin() {
+	public GithubStatusPlugin() {
 		super(PLUGIN_ID,
 				PluginSettings.class,
 				PluginSettings.FIELD_CONFIG,
@@ -38,6 +38,6 @@ public class GithubPRStatusPlugin extends GongNotifierPluginBase {
 		SecretDecryptService decSrv = new SecretDecryptService(new File(settings.getCipherKeyFile()));
 		GithubClient ghClient = new GithubClient();
 
-		addListener(new GithubPRStatusNotificationListener(srv, decSrv, ghClient, settings.getServerDisplayUrl()));
+		addListener(new GithubStatusNotificationListener(srv, decSrv, ghClient, settings.getServerDisplayUrl()));
 	}
 }
