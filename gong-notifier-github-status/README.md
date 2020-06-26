@@ -44,7 +44,7 @@ variables. They do not need to be set if your server does not have any authoriza
 
 ### Pipeline requirements
 
-Only pipelines matching the following criteria can make use of the PR status update:
+Only pipelines matching the following criteria can make use of the GitHub status update:
 
 * Pipeline uses a normal Git material or a pull-request material of type "github.pr" (provided by [github-pr-poller plugin](https://github.com/ashwanthkumar/gocd-build-github-pull-requests))
 * The material points to a repository on github.com
