@@ -43,7 +43,9 @@ public class EmailNotificationListener implements NotificationListener {
 	public void handle(BaseEvent event, StageStateChange stateChange) {
 		HistoricalEvent histEvent = history.determineHistoricalEvent(event, stateChange);
 		Collection<String> targets = router.computeTargets(histEvent, stateChange, routeParams);
-		notifyTargets(stateChange, histEvent, targets);
+		if (!targets.isEmpty()) {
+			notifyTargets(stateChange, histEvent, targets);
+		}
 	}
 
 	private void notifyTargets(StageStateChange stateChange, HistoricalEvent histEvent, Collection<String> targets) {

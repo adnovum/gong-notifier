@@ -59,6 +59,6 @@ public class PipelineConfig {
 
 	public static class Material {
 		public String type;
-		public Map<String, String> attributes = new HashMap<>();
+		public Map<String, Object> attributes = new HashMap<>();
 	}
 }
