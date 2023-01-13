@@ -123,7 +123,7 @@ about failures of the `deploy` stage, you can configure this like so:
 GONG_EMAIL_EVENTS = deploy.failed
 ```
 
-If you're interested in getting all events but only for a specific stage, use `all` instead of a specific event:
+If you're interested in events only for a specific stage, use the `all` keyword to receive the default events from that.
 
 ```text
 GONG_EMAIL_EVENTS = deploy.all
